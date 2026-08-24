@@ -1,26 +1,109 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-void: #0b0d10;
+  --bg-panel: #12151a;
+  --line: #22262c;
+  --text-primary: #f2f0ea;
+  --text-secondary: #8b8f96;
+  --signal-amber: #ffa630;
+  --data-cyan: #6fe7dd;
+  --status-nominal: #4ade80;
+
+  --background: var(--bg-void);
+  --foreground: var(--text-primary);
+  --card: var(--bg-panel);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-panel);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--signal-amber);
+  --primary-foreground: #0b0d10;
+  --secondary: var(--bg-panel);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-panel);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--data-cyan);
+  --accent-foreground: #0b0d10;
+  --destructive: #ef4444;
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--signal-amber);
+  --radius: 0.375rem;
 }
 
 @theme inline {
+  --color-bg-void: var(--bg-void);
+  --color-bg-panel: var(--bg-panel);
+  --color-line: var(--line);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-signal-amber: var(--signal-amber);
+  --color-data-cyan: var(--data-cyan);
+  --color-status-nominal: var(--status-nominal);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-mono: var(--font-space-mono);
+  --font-sans: var(--font-geist);
+
+  --ease-flight: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--signal-amber);
+  color: var(--bg-void);
+}
+
+/* Custom cursor is toggled on <html> via JS, gated on fine pointer + motion-safe */
+html.custom-cursor,
+html.custom-cursor * {
+  cursor: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.custom-cursor,
+  html.custom-cursor * {
+    cursor: auto;
+  }
 }
