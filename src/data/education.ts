@@ -1,31 +1,22 @@
 export interface EducationEntry {
   program: string;
-  org: string;
-  start: string;
+  org?: string;
+  start?: string;
   end: string;
   detail?: string;
 }
 
 export const education: EducationEntry[] = [
   {
-    program: "BSc Software Engineering",
-    org: "African Leadership University, Kigali, Rwanda",
-    start: "September 2025",
-    end: "November 2029 (expected)",
-    // CONFIRM: which GPA scale (4.0 or 5.0)? state it explicitly once known.
-    detail: "GPA 4.3",
+    program: "BSc (Hons) Software Engineering",
+    org: "African Leadership University, Kigali",
+    start: "Sep 2025",
+    end: "2029 (expected)",
+    detail: "CGPA 4.37 / 5.0 · Mastercard Foundation Scholar",
   },
   {
-    program: "Software Engineering Certificate",
-    org: "ALX Africa",
-    start: "2023",
-    end: "2024",
-  },
-  {
-    program: "Certificate of Completion, Frontend Internship",
-    org: "HNG Tech",
-    start: "July 2024",
-    end: "September 2024",
+    program: "ALX Software Engineering Program",
+    end: "Completed",
   },
 ];
 
@@ -39,13 +30,18 @@ export const roles: RoleEntry[] = [
   {
     role: "Teaching Assistant",
     org: "African Leadership University",
-    // NEEDED: which course/subject
-    detail: undefined,
+    detail: "Introduction to Python Programming, May 2026 to Aug 2026",
+  },
+  {
+    role: "Co-Lead",
+    org: "Claude Builders Club ALU",
+    detail:
+      "Feb 2026 to present: organised a hackathon with 12 projects, 4 judges and a Demo Day, plus a Claude API key-sharing scheme so every team could build.",
   },
   {
     role: "Claude Ambassador",
-    org: "Anthropic",
-    // OPTIONAL: add a line on what this involves day-to-day, in Favour's own words
-    detail: undefined,
+    org: "Anthropic Ambassador Program",
+    detail:
+      "Feb 2026 to present: runs weekly activations and AI fluency workshops for students.",
   },
 ];

@@ -5,28 +5,28 @@ import { ProjectCard } from "@/components/project-card";
 
 const STATS = [
   {
-    value: "30%",
-    label: "Faster initial load",
-    detail: "Next.js App Router rebuild at Fluencer",
-    anchor: "/about#fluencer-load",
-  },
-  {
-    value: "40%",
-    label: "Fewer integration bugs",
-    detail: "API/middleware work at Fluencer",
-    anchor: "/about#fluencer-bugs",
-  },
-  {
-    value: "50+",
-    label: "Screens standardized",
-    detail: "One shared component library at Fluencer",
+    value: "20+",
+    label: "Screens built",
+    detail: "Next.js component library at Fluencer",
     anchor: "/about#fluencer-library",
   },
   {
-    value: "<200ms",
-    label: "Route transitions",
-    detail: "Code-splitting work at Fluencer",
-    anchor: "/about#fluencer-perf",
+    value: "Top 5",
+    label: "Of 35 teams",
+    detail: "AidReady, Frontiers GenAI Hackathon",
+    anchor: "/projects/aidready",
+  },
+  {
+    value: "4.37 / 5.0",
+    label: "CGPA",
+    detail: "BSc Software Engineering, ALU",
+    anchor: "/about#education",
+  },
+  {
+    value: "12",
+    label: "Hackathon projects",
+    detail: "Organised as Co-Lead, Claude Builders Club",
+    anchor: "/about#leadership",
   },
 ];
 

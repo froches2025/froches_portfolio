@@ -2,6 +2,7 @@ export interface ExperienceEntry {
   role: string;
   org: string;
   orgUrl?: string;
+  location?: string;
   start: string;
   end: string; // "Present" allowed
   bullets: string[];
@@ -9,47 +10,26 @@ export interface ExperienceEntry {
 
 export const experience: ExperienceEntry[] = [
   {
-    role: "Frontend Engineer",
+    role: "Frontend Engineer (Contract)",
     org: "Fluencer",
-    start: "September 2024",
-    end: "Present",
+    location: "Remote",
+    start: "Feb 2025",
+    end: "Aug 2025",
     bullets: [
-      "Architected a Next.js 13 App Router layout with global providers (Auth, AudioRecorder, Toasts), boosting initial-load performance by 30%.",
-      "Designed and built a reusable Tailwind + Radix UI component library (buttons, dialogs, inputs, popovers), enforcing design consistency across 50+ screens.",
-      "Integrated WaveSurfer.js audio recording and Three.js 3D loading animations into the avatar/video generation flows.",
-      "Built complex form workflows (login, signup, password reset, profile management) with React Hook Form, Zod validation, and Sonner notifications.",
-      "Managed client-side state with Zustand stores for avatars, scripts, credits, and user profiles, eliminating UI flicker during updates.",
-      "Wired Axios-based API services and Next.js middleware for secure, credit-based operations (avatar training, video generation), reducing frontend-backend integration bugs by 40%.",
-      "Collaborated on performance tuning and code-splitting using dynamic imports and caching, maintaining sub-200ms route transitions.",
+      "Sole frontend developer for phase one of a subscription-based, AI-powered video editing platform, owning the Next.js App Router architecture (global auth, audio and toast providers) from first version to handover.",
+      "Built 20+ screens and a reusable component library with TypeScript, Tailwind CSS and Radix/shadcn UI, plus login, signup, password reset and profile flows using React Hook Form and Zod validation.",
+      "Managed client-side state with Zustand and wired Axios API services and Next.js middleware for secure, credit-based operations such as avatar training and video generation, with a WebSocket feed for live generation progress.",
+      "Integrated WaveSurfer.js audio recording, Three.js loading animations, payments and price-tier-based access; the client extended the contract into a second phase.",
     ],
   },
   {
-    role: "Lead Frontend Developer",
-    org: "A-Shopper",
-    start: "September 2024",
-    end: "November 2024",
+    role: "Frontend Intern",
+    org: "HNG Internship (Cohort 11)",
+    location: "Remote",
+    start: "Jul 2024",
+    end: "Sep 2024",
     bullets: [
-      "Independently designed, developed, and implemented the entire frontend from scratch.",
-      "Ensured cross-browser compatibility and responsiveness across devices.",
-      "Integrated backend APIs to connect the frontend with server-side logic.",
-      "Tested and debugged the application to guarantee performance and functionality.",
+      "Finished all stages of a competitive remote internship that cuts participants each stage, shipping graded tasks on tight deadlines.",
     ],
   },
-  {
-    role: "Frontend Developer Intern",
-    org: "HNG Tech",
-    start: "July 2024",
-    end: "September 2024",
-    bullets: [
-      "Collaborated cross-functionally with backend developers, UI/UX designers, and project managers to deliver high-quality web applications.",
-      "Implemented frontend features integrated with backend APIs.",
-      "Built responsive, cross-browser-compatible user interfaces.",
-      "Translated Figma designs into pixel-perfect Next.js code.",
-      "Contributed to testing and debugging to ensure a smooth user experience.",
-    ],
-  },
-  // OPEN QUESTION for Favour: Adclickgo (Community and Social Manager, Jul-Dec 2024) is on
-  // the resume but it's a non-engineering role. Recommend leaving it off this "purely
-  // technical" timeline and keeping it on the general resume/LinkedIn instead. Add it back
-  // here only if Favour wants to show range.
 ];
