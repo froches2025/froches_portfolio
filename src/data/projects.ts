@@ -41,7 +41,8 @@ export const projects: Project[] = [
       "Implemented Google sign-in, a Goal to Target to Task hierarchy for SMART weekly planning, hourly activity logging and mood journaling. Integrated the Canvas LMS API (personal access token) to sync assignments, due dates and grades, and Web Push notifications for reminders.",
     stack: ["React", "TypeScript", "FastAPI", "Supabase PostgreSQL", "Docker"],
     status: "live",
-    liveUrl: "https://lifetrack.froches.tech",
+    // Temporary Vercel URL; switch to https://lifetrack.froches.tech once its DNS resolves.
+    liveUrl: "https://frontend-khaki-mu-72.vercel.app",
     images: [],
     featured: false,
     year: "2026",
