@@ -88,9 +88,11 @@ export default async function ProjectDetailPage({
         ))}
       </div>
 
-      <p className="mt-8 text-base leading-relaxed text-text-primary">
-        {project.description}
-      </p>
+      {project.description && (
+        <p className="mt-8 text-base leading-relaxed text-text-primary">
+          {project.description}
+        </p>
+      )}
 
       {(project.liveUrl || project.repoUrl) && (
         <div className="mt-8 flex flex-wrap gap-4">

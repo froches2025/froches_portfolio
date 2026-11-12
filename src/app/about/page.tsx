@@ -21,12 +21,13 @@ export default function AboutPage() {
       </h1>
 
       <p className="mt-6 text-base leading-relaxed text-text-secondary">
-        I&apos;m a software engineering student at African Leadership
-        University in Kigali, currently working as a Frontend Engineer at
-        Fluencer, where I build interfaces used across 50+ screens in
-        production. I care about performance, clean state management, and
-        interfaces that don&apos;t get in the way. I&apos;m currently
-        expanding into backend development with Python.
+        Software engineer with production frontend experience as the sole
+        frontend developer on a paid AI video editing SaaS, plus full-stack
+        projects in React, TypeScript, Python (FastAPI) and PostgreSQL. Ships
+        and deploys AI-powered products for African users, from a
+        load-balanced web app on two servers to an installable PWA with push
+        reminders and LMS integration. Available for full-time, part-time,
+        contract and internship roles.
       </p>
 
       {/* Experience */}
@@ -43,6 +44,7 @@ export default function AboutPage() {
                 </h3>
                 <span className="font-mono text-[11px] uppercase tracking-widest text-text-secondary">
                   {entry.start} — {entry.end}
+                  {entry.location && ` · ${entry.location}`}
                 </span>
               </div>
               <ul className="mt-3 flex flex-col gap-2">
@@ -67,7 +69,7 @@ export default function AboutPage() {
       </section>
 
       {/* Education */}
-      <section className="mt-16">
+      <section id="education" className="mt-16 scroll-mt-24">
         <h2 className="font-mono text-xs uppercase tracking-widest text-text-secondary">
           Education
         </h2>
@@ -79,10 +81,12 @@ export default function AboutPage() {
                   {entry.program}
                 </h3>
                 <span className="font-mono text-[11px] uppercase tracking-widest text-text-secondary">
-                  {entry.start} — {entry.end}
+                  {entry.start ? `${entry.start} — ${entry.end}` : entry.end}
                 </span>
               </div>
-              <p className="mt-1 text-sm text-text-secondary">{entry.org}</p>
+              {entry.org && (
+                <p className="mt-1 text-sm text-text-secondary">{entry.org}</p>
+              )}
               {entry.detail && (
                 <p className="mt-1 text-sm text-text-secondary">
                   {entry.detail}
@@ -92,7 +96,7 @@ export default function AboutPage() {
           ))}
         </div>
 
-        <div className="mt-8 flex flex-col gap-3">
+        <div id="leadership" className="mt-8 flex scroll-mt-24 flex-col gap-3">
           {roles.map((role) => (
             <div key={`${role.org}-${role.role}`} className="text-sm">
               <span className="font-mono font-bold text-text-primary">
@@ -149,9 +153,6 @@ export default function AboutPage() {
 }
 
 function fluencerAnchor(bullet: string) {
-  if (bullet.includes("initial-load performance")) return "fluencer-load";
-  if (bullet.includes("integration bugs")) return "fluencer-bugs";
-  if (bullet.includes("component library")) return "fluencer-library";
-  if (bullet.includes("route transitions")) return "fluencer-perf";
+  if (bullet.includes("20+ screens")) return "fluencer-library";
   return undefined;
 }

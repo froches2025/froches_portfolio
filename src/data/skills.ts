@@ -4,25 +4,33 @@ export interface SkillGroup {
 }
 
 export const skills: SkillGroup[] = [
-  { category: "Core", items: ["React.js", "Next.js", "JavaScript", "TypeScript"] },
+  { category: "Languages", items: ["Python", "TypeScript", "JavaScript", "SQL"] },
   {
-    category: "Styling & UI",
+    category: "Frontend",
+    items: ["React", "Next.js", "Tailwind CSS", "PWAs", "State management", "Responsive UI"],
+  },
+  {
+    category: "Backend",
     items: [
-      "Tailwind CSS",
-      "Radix UI",
-      "Responsive Design",
-      "Pixel-Perfect Implementation",
-      "Cross-Browser Compatibility",
+      "FastAPI",
+      "Django",
+      "Node.js",
+      "REST APIs",
+      "Authentication and authorization",
+      "Payment integration",
+      "Unit testing (pytest, Jest, Vitest)",
     ],
   },
-  { category: "State & Data", items: ["Zustand", "Axios", "React Hook Form"] },
-  { category: "Media & Interactive", items: ["Three.js", "WaveSurfer.js"] },
-  { category: "Platform", items: ["Firebase"] },
+  { category: "Data", items: ["PostgreSQL", "Supabase", "Firebase"] },
   {
-    category: "Practices",
-    items: ["Agile Methodologies", "Debugging & Testing", "Collaboration", "Communication"],
+    category: "DevOps",
+    items: [
+      "Docker",
+      "Linux",
+      "Git and GitHub",
+      "HAProxy load balancing",
+      "Multi-server deployment",
+    ],
   },
-  // Backend/Python skills are newly acquired and not yet detailed — add a
-  // "Backend" category here once Favour confirms specific tools/frameworks.
-  // Do not guess Django/Flask/FastAPI etc. without confirmation.
+  { category: "AI", items: ["Claude API", "Claude Vision", "Vertex AI", "Gemini API"] },
 ];

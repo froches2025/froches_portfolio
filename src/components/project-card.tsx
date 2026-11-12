@@ -69,16 +69,18 @@ export function ProjectCard({ project }: { project: Project }) {
 
         <p className="mt-3 text-sm text-text-secondary">{project.oneLiner}</p>
 
-        <div className="mt-5 flex flex-wrap gap-2">
-          {project.stack.map((s) => (
-            <span
-              key={s}
-              className="rounded border border-line px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-text-secondary"
-            >
-              {s}
-            </span>
-          ))}
-        </div>
+        {project.stack.length > 0 && (
+          <div className="mt-5 flex flex-wrap gap-2">
+            {project.stack.map((s) => (
+              <span
+                key={s}
+                className="rounded border border-line px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest text-text-secondary"
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+        )}
       </motion.div>
     </Link>
   );
