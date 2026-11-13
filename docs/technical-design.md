@@ -338,7 +338,7 @@ Runs on pull requests to v2 and main and on pushes to them. Each job is named af
 
 | Job | Needs | Runs |
 | --- | --- | --- |
-| `lint` |  | ESLint, then Prettier format check |
+| `lint` |  | ESLint, Prettier format check, then `npm audit --omit=dev --audit-level=high`: a high or critical issue in a runtime dependency fails CI, while dev-only findings (for example in @lhci/cli) are reported but do not block |
 | `typecheck` |  | `next typegen`, then `tsc --noEmit` |
 | `commitlint` |  | Pull requests only: every commit in the PR, then the PR title. The title becomes the commit on v2 and main because PRs are squash-merged. It is passed to commitlint through an environment variable, never inlined in the script, so a crafted title cannot inject shell commands |
 | `unit` |  | Vitest unit and component tests (coverage from step 2) |

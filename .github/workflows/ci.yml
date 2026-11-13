@@ -26,6 +26,9 @@ jobs:
       - uses: ./.github/actions/setup
       - run: npm run lint
       - run: npm run format:check
+      # Runtime dependencies only: dev-only findings (such as @lhci/cli's) are reported by npm, not blocking.
+      - name: Audit runtime dependencies
+        run: npm audit --omit=dev --audit-level=high
 
   typecheck:
     name: typecheck
