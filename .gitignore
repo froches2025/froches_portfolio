@@ -43,3 +43,9 @@ next-env.d.ts
 
 # Windows download metadata (WSL)
 *:Zone.Identifier
+
+# test and audit output
+/test-results/
+/playwright-report/
+/blob-report/
+/.lighthouseci/
