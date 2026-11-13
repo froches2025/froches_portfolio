@@ -49,3 +49,6 @@ next-env.d.ts
 /playwright-report/
 /blob-report/
 /.lighthouseci/
+
+# Chrome profiles that Lighthouse creates in the working directory when run under WSL
+/C:*
