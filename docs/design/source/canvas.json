@@ -1,0 +1,158 @@
+{
+ "v": 3,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-13T06:55:45Z"
+ },
+ "title": "Froches Portfolio v2: Visual design",
+ "launch": {
+  "view": "canvas"
+ },
+ "pages": [],
+ "boards": {
+  "Main.dc.html": {
+   "x": 0,
+   "y": 300,
+   "w": 390,
+   "h": 3000,
+   "title": "Home"
+  },
+  "MainDark.dc.html": {
+   "x": 0,
+   "y": 4620,
+   "w": 390,
+   "h": 3000,
+   "title": "Home (dark)"
+  },
+  "Projects.dc.html": {
+   "x": 470,
+   "y": 300,
+   "w": 390,
+   "h": 2560,
+   "title": "Projects"
+  },
+  "ProjectsDark.dc.html": {
+   "x": 470,
+   "y": 4620,
+   "w": 390,
+   "h": 2560,
+   "title": "Projects (dark)"
+  },
+  "CaseStudy.dc.html": {
+   "x": 940,
+   "y": 300,
+   "w": 390,
+   "h": 2100,
+   "title": "Case study: AidReady",
+   "is_interactive": true
+  },
+  "CaseStudyDark.dc.html": {
+   "x": 940,
+   "y": 4620,
+   "w": 390,
+   "h": 2100,
+   "title": "Case study: AidReady (dark)",
+   "is_interactive": true
+  },
+  "About.dc.html": {
+   "x": 1410,
+   "y": 300,
+   "w": 390,
+   "h": 3900,
+   "title": "About"
+  },
+  "AboutDark.dc.html": {
+   "x": 1410,
+   "y": 4620,
+   "w": 390,
+   "h": 3900,
+   "title": "About (dark)"
+  },
+  "NotFound.dc.html": {
+   "x": 1880,
+   "y": 300,
+   "w": 390,
+   "h": 844,
+   "title": "Page not found"
+  },
+  "NotFoundDark.dc.html": {
+   "x": 1880,
+   "y": 4620,
+   "w": 390,
+   "h": 844,
+   "title": "Page not found (dark)"
+  },
+  "Menu.dc.html": {
+   "x": 2350,
+   "y": 300,
+   "w": 390,
+   "h": 844,
+   "title": "Menu and quick search",
+   "is_interactive": true
+  },
+  "MenuDark.dc.html": {
+   "x": 2350,
+   "y": 4620,
+   "w": 390,
+   "h": 844,
+   "title": "Menu and quick search (dark)",
+   "is_interactive": true
+  },
+  "Desktop.dc.html": {
+   "x": 0,
+   "y": 8940,
+   "w": 1440,
+   "h": 1900,
+   "title": "Home on desktop",
+   "expand": "fill"
+  },
+  "AboutDesktop.dc.html": {
+   "x": 1520,
+   "y": 8940,
+   "w": 1440,
+   "h": 3000,
+   "title": "About on desktop",
+   "expand": "fill"
+  }
+ },
+ "order": [
+  "Main.dc.html",
+  "MainDark.dc.html",
+  "Projects.dc.html",
+  "ProjectsDark.dc.html",
+  "CaseStudy.dc.html",
+  "CaseStudyDark.dc.html",
+  "About.dc.html",
+  "AboutDark.dc.html",
+  "NotFound.dc.html",
+  "NotFoundDark.dc.html",
+  "Menu.dc.html",
+  "MenuDark.dc.html",
+  "Desktop.dc.html",
+  "AboutDesktop.dc.html"
+ ],
+ "notes": {
+  "rowLight": {
+   "x": 0,
+   "y": 40,
+   "text": "Phone, light theme",
+   "kind": "title1",
+   "maxW": 2740
+  },
+  "rowDark": {
+   "x": 0,
+   "y": 4360,
+   "text": "Phone, dark theme",
+   "kind": "title1",
+   "maxW": 2740
+  },
+  "rowDesk": {
+   "x": 0,
+   "y": 8680,
+   "text": "Desktop",
+   "kind": "title1",
+   "maxW": 2960
+  }
+ },
+ "designSystems": []
+}

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AidReady case study</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{opacity:.85}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid #E9A93B;outline-offset:3px}
+@keyframes drift{from{transform:translate(0,0)}to{transform:translate(-14px,10px)}}
+.contours{animation:drift 22s ease-in-out infinite alternate}
+.mi-btn{transition:transform .18s cubic-bezier(.2,.8,.2,1),filter .18s}
+.mi-btn:hover{transform:translateY(-2px);filter:brightness(1.04)}
+.mi-btn:active{transform:translateY(0) scale(.97)}
+.mi-link{text-decoration:none;background-image:linear-gradient(currentColor,currentColor);background-size:0% 1.5px;background-position:0 100%;background-repeat:no-repeat;transition:background-size .25s ease}
+.mi-link:hover,.mi-link:focus-visible{background-size:100% 1.5px}
+.mi-card{transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.mi-card:hover{transform:translateY(-4px) rotate(-.4deg)}
+.mi-card:active{transform:scale(.985)}
+.mi-chip{transition:transform .15s ease}
+.mi-chip:hover{transform:translateY(-1px)}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-6px) rotate(calc(var(--r,0deg) + 5deg))}}
+.doodle{animation:bob 5.5s ease-in-out infinite}
+.mi-card:hover .doodle,.mi-card:active .doodle{animation-duration:1.4s}
+@media (hover:none){.mi-card:hover,.mi-btn:hover{transform:none}}
+@media (prefers-reduced-motion: reduce){.contours,.doodle{animation:none}.mi-btn,.mi-card,.mi-chip,.mi-link{transition:none}}
+</style>
+</helmet>
+<div style="width:390px;height:2100px;box-sizing:border-box;background:{{t.ground}};color:{{t.ink}};font-family:&#39;Schibsted Grotesk&#39;,system-ui,sans-serif;position:relative;overflow:hidden">
+<header style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px;position:relative;z-index:2">
+<a href="Main.dc.html" style="font-weight:700;font-size:17px;letter-spacing:-0.01em;text-decoration:none;color:{{t.ink}}">Favour Michael</a>
+<a href="Menu.dc.html" aria-label="Open menu and search" class="mi-btn" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:12px;border:1px solid {{t.line}};color:{{t.ink}}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"></path></svg></a>
+</header>
+<main style="padding:16px 20px 24px">
+<a href="Projects.dc.html" style="display:inline-block;padding:10px 0;font-size:16px;font-weight:600;color:{{t.muted}}">All projects</a>
+<h1 style="margin:8px 0 0;font-size:48px;font-weight:800;letter-spacing:-0.04em">AidReady</h1>
+<p style="margin:12px 0 0;font-size:19px;line-height:1.45">Voice-first emergency first-aid web app.</p>
+<dl style="margin:20px 0 0;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:12px 16px">
+<div><dt style="font-size:14px;color:{{t.muted}}">Status</dt><dd style="margin:2px 0 0;font-size:16px;font-weight:600">Live</dd></div>
+<div><dt style="font-size:14px;color:{{t.muted}}">Built at</dt><dd style="margin:2px 0 0;font-size:16px;font-weight:600">Frontiers GenAI Hackathon</dd></div>
+</dl>
+<div style="display:flex;flex-direction:column;gap:12px;margin-top:24px"><a href="https://aidready-finder.froches.tech" class="mi-btn" style="display:flex;align-items:center;justify-content:center;height:52px;border-radius:14px;background:{{t.accentFill}};color:{{t.onAccent}};font-weight:700;font-size:17px;text-decoration:none">Visit Help Finder</a></div>
+<section aria-label="Screenshots" style="margin-top:32px;display:flex;flex-direction:column;gap:12px">
+<div role="img" aria-label="{{slide.alt}}" style="height:240px;border-radius:16px;border:1.5px dashed {{t.line}};background:{{t.surface}};display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;text-align:center;font-size:14px;color:{{t.muted}}">{{slide.alt}}</div>
+<p style="margin:0;font-size:15px;line-height:1.45">{{slide.caption}}</p>
+<div style="display:flex;align-items:center;justify-content:space-between">
+<button type="button" class="mi-btn" aria-label="Previous screenshot" onClick="{{prev}}" style="width:44px;height:44px;border-radius:12px;border:1px solid {{t.line}};background:transparent;color:{{t.ink}};cursor:pointer;display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+<span style="font-size:15px;color:{{t.muted}}">{{position}}</span>
+<button type="button" class="mi-btn" aria-label="Next screenshot" onClick="{{next}}" style="width:44px;height:44px;border-radius:12px;border:1px solid {{t.line}};background:transparent;color:{{t.ink}};cursor:pointer;display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 5l7 7-7 7"></path></svg></button>
+</div>
+</section>
+<section style="margin-top:40px;display:flex;flex-direction:column;gap:32px">
+<div style="border-top:1px solid {{t.line}};padding-top:20px"><h2 style="margin:0 0 10px;font-size:22px;font-weight:700">My role</h2><p style="margin:0;font-size:17px;line-height:1.6">I built the app largely solo, in one day.</p></div>
+<div style="border-top:1px solid {{t.line}};padding-top:20px"><h2 style="margin:0 0 10px;font-size:22px;font-weight:700">Approach</h2><p style="margin:0;font-size:17px;line-height:1.6">AidReady is voice-first, so someone in an emergency can get first-aid guidance without typing. Its Help Finder locates emergency facilities and runs across two web servers behind an HAProxy load balancer.</p></div>
+<div style="border-top:1px solid {{t.line}};padding-top:20px"><h2 style="margin:0 0 10px;font-size:22px;font-weight:700">Stack</h2><div style="display:flex;flex-wrap:wrap;gap:8px"><span class="mi-chip" style="font-size:13px;font-weight:500;padding:5px 10px;border-radius:999px;border:1px solid {{t.line}};color:{{t.muted}}">HAProxy</span><span class="mi-chip" style="font-size:13px;font-weight:500;padding:5px 10px;border-radius:999px;border:1px solid {{t.line}};color:{{t.muted}}">Two web servers</span><span class="mi-chip" style="font-size:13px;font-weight:500;padding:5px 10px;border-radius:999px;border:1px solid {{t.line}};color:{{t.muted}}">Voice-first UI</span></div></div>
+<div style="border-top:1px solid {{t.line}};padding-top:20px"><h2 style="margin:0 0 10px;font-size:22px;font-weight:700">Outcome</h2><p style="margin:0;font-size:17px;line-height:1.6">Placed top 5 of 35 teams at the Frontiers GenAI Hackathon at ALX Kigali, powered by Google and DeepMind.</p></div>
+</section>
+<nav aria-label="More projects" style="margin-top:40px;border-top:1px solid {{t.line}};padding-top:20px;display:flex;flex-direction:column;gap:4px">
+<span style="font-size:14px;color:{{t.muted}}">Next project</span>
+<a href="#" style="font-size:24px;font-weight:700;letter-spacing:-0.02em;color:{{t.ink}}">LifeTrack</a>
+</nav>
+</main>
+<footer style="padding:32px 20px 40px;border-top:1px solid {{t.line}};display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:20px;flex-wrap:wrap"><a href="https://github.com/froches2025" class="mi-link" style="font-size:16px;font-weight:600;color:{{t.ink}}">GitHub</a><a href="https://www.linkedin.com/in/froches" class="mi-link" style="font-size:16px;font-weight:600;color:{{t.ink}}">LinkedIn</a><a href="https://x.com/froches_" class="mi-link" style="font-size:16px;font-weight:600;color:{{t.ink}}">X</a><a href="mailto:f.michael@alustudent.com" class="mi-link" style="font-size:16px;font-weight:600;color:{{t.ink}}">Email</a></div>
+<p style="margin:0;font-size:14px;line-height:1.5;color:{{t.muted}}">Built with Next.js and Supabase. <a href="https://github.com/froches2025/froches_portfolio" style="color:{{t.muted}}">Read the source on GitHub</a>.</p>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme": {"editor": "enum", "options": ["light", "dark"], "default": "light"}, "$preview": {"width": 390, "height": 2100}}'>
+class Component extends DCLogic {
+
+renderVals() {
+const T={light:{ground:'#F1F4F0',surface:'#FFFFFF',ink:'#15231E',muted:'#4F5D57',line:'#D3DBD5',accentText:'#8A5A00',accentFill:'#E9A93B',onAccent:'#15231E',contour:'#BCC9C1'},dark:{ground:'#10201B',surface:'#182C26',ink:'#E8EEE9',muted:'#A3B5AD',line:'#2A403A',accentText:'#F2B544',accentFill:'#F2B544',onAccent:'#10201B',contour:'#2D4B42'}};
+const t = T[this.props.theme] || T.light;
+const slides=[{"alt": "Screenshot 1: AidReady voice assistant screen (Favour to supply)", "caption": "The voice-first assistant guides someone through first aid."}, {"alt": "Screenshot 2: AidReady Help Finder map (Favour to supply)", "caption": "Help Finder locates emergency facilities."}, {"alt": "Screenshot 3: Hackathon demo (Favour to supply)", "caption": "Built at the Frontiers GenAI Hackathon, ALX Kigali."}];const i=(this.state&&this.state.i)||0;const slide=slides[i];const go=d=>()=>this.setState({i:(i+d+slides.length)%slides.length});const prev=go(-1),next=go(1);const position=(i+1)+' of '+slides.length;//RET:slide, prev, next, position
+return { t: t, slide, prev, next, position };
+}
+}
+</script>
+</body>
+</html>
