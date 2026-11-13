@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Menu and quick search</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}a:hover{opacity:.85}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid #E9A93B;outline-offset:3px}
+@keyframes drift{from{transform:translate(0,0)}to{transform:translate(-14px,10px)}}
+.contours{animation:drift 22s ease-in-out infinite alternate}
+.mi-btn{transition:transform .18s cubic-bezier(.2,.8,.2,1),filter .18s}
+.mi-btn:hover{transform:translateY(-2px);filter:brightness(1.04)}
+.mi-btn:active{transform:translateY(0) scale(.97)}
+.mi-link{text-decoration:none;background-image:linear-gradient(currentColor,currentColor);background-size:0% 1.5px;background-position:0 100%;background-repeat:no-repeat;transition:background-size .25s ease}
+.mi-link:hover,.mi-link:focus-visible{background-size:100% 1.5px}
+.mi-card{transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.mi-card:hover{transform:translateY(-4px) rotate(-.4deg)}
+.mi-card:active{transform:scale(.985)}
+.mi-chip{transition:transform .15s ease}
+.mi-chip:hover{transform:translateY(-1px)}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-6px) rotate(calc(var(--r,0deg) + 5deg))}}
+.doodle{animation:bob 5.5s ease-in-out infinite}
+.mi-card:hover .doodle,.mi-card:active .doodle{animation-duration:1.4s}
+@media (hover:none){.mi-card:hover,.mi-btn:hover{transform:none}}
+@media (prefers-reduced-motion: reduce){.contours,.doodle{animation:none}.mi-btn,.mi-card,.mi-chip,.mi-link{transition:none}}
+</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;background:{{t.ground}};color:{{t.ink}};font-family:&#39;Schibsted Grotesk&#39;,system-ui,sans-serif;position:relative;overflow:hidden">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 20px">
+<span style="font-weight:700;font-size:17px">Menu</span>
+<a href="Main.dc.html" aria-label="Close menu" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:12px;border:1px solid {{t.line}};color:{{t.ink}}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+</div>
+<div style="padding:8px 20px 0;display:flex;flex-direction:column;gap:8px">
+<label for="jump" style="font-size:15px;font-weight:600">Jump to a page or action</label>
+<input id="jump" type="search" placeholder="Try &#8220;resume&#8221; or &#8220;AidReady&#8221;" value="{{query}}" onChange="{{onQuery}}" style="height:52px;border-radius:14px;border:1.5px solid {{t.line}};background:{{t.surface}};color:{{t.ink}};font-family:inherit;font-size:17px;padding:0 16px;box-sizing:border-box">
+</div>
+<ul style="list-style:none;margin:16px 0 0;padding:0 20px">
+<sc-for list="{{results}}" as="c" hint-placeholder-count="6">
+<li style="border-top:1px solid {{t.line}}"><a href="{{c.href}}" style="display:flex;justify-content:space-between;align-items:center;min-height:56px;text-decoration:none;color:{{t.ink}}"><span style="font-size:20px;font-weight:700;letter-spacing:-0.01em">{{c.label}}</span><span style="font-size:14px;color:{{t.muted}}">{{c.hint}}</span></a></li>
+</sc-for>
+</ul>
+<sc-if value="{{empty}}" hint-placeholder-val="{{false}}"><p style="margin:16px 20px;font-size:16px;color:{{t.muted}}">Nothing matches that. Try a project name or &#8220;resume&#8221;.</p></sc-if>
+<p style="position:absolute;bottom:28px;left:20px;right:20px;margin:0;font-size:14px;line-height:1.5;color:{{t.muted}}">On a keyboard, press Ctrl K (Cmd K on Mac) from any page to open this.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme": {"editor": "enum", "options": ["light", "dark"], "default": "light"}, "$preview": {"width": 390, "height": 844}}'>
+class Component extends DCLogic {
+
+renderVals() {
+const T={light:{ground:'#F1F4F0',surface:'#FFFFFF',ink:'#15231E',muted:'#4F5D57',line:'#D3DBD5',accentText:'#8A5A00',accentFill:'#E9A93B',onAccent:'#15231E',contour:'#BCC9C1'},dark:{ground:'#10201B',surface:'#182C26',ink:'#E8EEE9',muted:'#A3B5AD',line:'#2A403A',accentText:'#F2B544',accentFill:'#F2B544',onAccent:'#10201B',contour:'#2D4B42'}};
+const t = T[this.props.theme] || T.light;
+const all=[{"label": "Home", "hint": "Page", "href": "Main.dc.html"}, {"label": "Projects", "hint": "Page", "href": "Projects.dc.html"}, {"label": "About", "hint": "Page", "href": "About.dc.html"}, {"label": "AidReady case study", "hint": "Project", "href": "CaseStudy.dc.html"}, {"label": "Download resume", "hint": "Action", "href": "#"}, {"label": "Email Favour", "hint": "Action", "href": "mailto:f.michael@alustudent.com"}, {"label": "GitHub", "hint": "Link", "href": "https://github.com/froches2025"}, {"label": "LinkedIn", "hint": "Link", "href": "https://www.linkedin.com/in/froches"}];const q=((this.state&&this.state.q)||'');const results=all.filter(c=>c.label.toLowerCase().includes(q.trim().toLowerCase()));const empty=results.length===0;const onQuery=e=>this.setState({q:e.target.value});const query=q;//RET:results, empty, onQuery, query
+return { t: t, results, empty, onQuery, query };
+}
+}
+</script>
+</body>
+</html>

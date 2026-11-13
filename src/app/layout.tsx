@@ -53,7 +53,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geist.variable} ${spaceMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-bg-void text-text-primary">
+      <body
+        className="min-h-full flex flex-col bg-bg-void text-text-primary"
+        suppressHydrationWarning
+      >
         <LoadSequence />
         <CustomCursor />
         <SiteNav />
