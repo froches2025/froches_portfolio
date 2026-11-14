@@ -119,7 +119,11 @@ jobs:
           path: .next
       - run: test -f .next/BUILD_ID && echo "BUILD_ID $(cat .next/BUILD_ID)"
       - run: npm run lighthouse
-      - if: failure()
+      - name: Report scores
+        if: ${{ !cancelled() }}
+        run: node scripts/lighthouse-summary.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+      # Uploaded on every run, so passing scores can be compared over time too.
+      - if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
           name: lighthouse-results
