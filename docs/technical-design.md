@@ -61,13 +61,15 @@ tests/unit/  tests/e2e/ Vitest and Playwright
 | cmdk | 1.1.1 | Command palette, as in v1 |
 | @vercel/analytics | 2.0.1 | New |
 | vitest, @vitejs/plugin-react, vite, jsdom | 5.1.0, 6.3.0, 8.3.8, 31.0.0 | New: unit and component tests |
-| @testing-library/react | 16.3.3 | New |
+| @testing-library/react, @testing-library/dom | 16.3.3, 10.4.2 | New. dom is a required peer of react (added 13 Nov) |
 | @playwright/test, @axe-core/playwright | 1.65.0, 4.14.0 | New: end-to-end and accessibility tests |
 | @lhci/cli | 0.16.1 | New: Lighthouse in CI |
-| eslint, prettier, prettier-plugin-tailwindcss | 10.14.0, 3.10.1, 0.8.1 |  |
+| eslint, prettier, prettier-plugin-tailwindcss | 9.39.5, 3.10.1, 0.8.1 | NOT eslint 10: plugins bundled by eslint-config-next 16.4.6 accept ESLint 9 only (ADR 0001, 13 Nov) |
 | husky, lint-staged, @commitlint/cli, @commitlint/config-conventional | 9.1.7, 17.6.0, 21.2.4, 21.2.4 | New: git hooks |
+| @types/node, @types/react, @types/react-dom | 24.19.2, 19.3.0, 19.3.0 | Type definitions (added 13 Nov) |
+| class-variance-authority, clsx, tailwind-merge, tw-animate-css, lucide-react | 0.7.1, 2.1.1, 3.7.0, 1.4.0, 1.72.0 | Used by shadcn/ui, as in v1 (added 13 Nov). shadcn 4.23.0's init offers a new `cn` package instead of clsx and tailwind-merge; not adopted |
 
-Slice 1b adds browser-image-compression 2.0.2. Slice 2 adds resend 6.38.0, @marsidev/react-turnstile 1.6.3 and @vercel/speed-insights 2.1.0. Versions are re-checked when each slice starts.
+Step 2 adds @vitest/coverage-v8 5.1.0 (approved 13 Nov). Slice 1b adds browser-image-compression 2.0.2. Slice 2 adds resend 6.38.0, @marsidev/react-turnstile 1.6.3 and @vercel/speed-insights 2.1.0. Versions are re-checked when each slice starts.
 
 ## 2. Data model
 
@@ -332,11 +334,23 @@ Coverage target: 80% of lines in src/lib (proposed). Visual design is checked by
 
 ### CI pipeline (.github/workflows/ci.yml)
 
-1. Install: Node version from .nvmrc, `npm ci` with cache.
-2. In parallel: lint and format check, typecheck, commitlint on the PR's commits, unit and component tests with coverage.
-3. Database: `supabase start`, apply migrations, run the pgTAP tests, load the seed.
-4. Build the app against the local Supabase, then run Playwright with axe, then Lighthouse CI.
-5. On failure, upload the Playwright report and Lighthouse results as artifacts.
+Runs on pull requests to v2 and main and on pushes to them. Each job is named after its check, so branch protection lists these names:
+
+| Job | Needs | Runs |
+| --- | --- | --- |
+| `lint` |  | ESLint, Prettier format check, then `npm audit --omit=dev --audit-level=high`: a high or critical issue in a runtime dependency fails CI, while dev-only findings (for example in @lhci/cli) are reported but do not block |
+| `typecheck` |  | `next typegen`, then `tsc --noEmit` |
+| `commitlint` |  | Pull requests only: every commit in the PR, then the PR title. The title becomes the commit on v2 and main because PRs are squash-merged. It is passed to commitlint through an environment variable, never inlined in the script, so a crafted title cannot inject shell commands |
+| `unit` |  | Vitest unit and component tests (coverage from step 2) |
+| `build` |  | `next build`, then uploads `.next/` (without its cache) as an artifact. `include-hidden-files` is set because upload-artifact skips hidden folders by default |
+| `e2e` | `build` | Downloads the build into `.next/`, then Playwright with axe on desktop Chromium and mobile WebKit |
+| `lighthouse` | `build` | Downloads the build into `.next/`, then Lighthouse CI, mobile preset, 3 runs. Performance 90+ on the median run (`median-run`); accessibility, best practices and SEO 100 on every run (`pessimistic`, the worst run). Each run's scores go to the job log and summary, and the reports are uploaded on every run |
+| `database` (from step 2) |  | `supabase start`, apply migrations, run the pgTAP tests, load the seed |
+
+1. Every job installs Node from .nvmrc and runs `npm ci` with the npm cache (shared composite action `.github/actions/setup`).
+2. `NEXT_PUBLIC_SITE_URL` is set to http://localhost:3000 for the whole workflow; it is not a secret.
+3. On failure, the Playwright report and Lighthouse results are uploaded as artifacts.
+4. From step 2, the build runs against the local Supabase.
 
 Branch protection on v2 and main requires every job to pass and the branch to be up to date. Vercel builds its own preview for each PR in parallel.
 

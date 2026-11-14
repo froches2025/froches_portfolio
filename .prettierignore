@@ -1,0 +1,24 @@
+# Generated or installed
+package-lock.json
+next-env.d.ts
+.next/
+out/
+build/
+coverage/
+playwright-report/
+test-results/
+blob-report/
+.lighthouseci/
+
+# Binary and static assets
+public/
+
+# Exported documents and design sources, kept exactly as exported
+docs/prd.md
+docs/technical-design.md
+docs/design/
+docs/content/
+
+# Written by `next dev` and by Favour; not reformatted by tooling
+AGENTS.md
+CLAUDE.md
