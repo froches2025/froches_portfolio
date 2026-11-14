@@ -344,7 +344,7 @@ Runs on pull requests to v2 and main and on pushes to them. Each job is named af
 | `unit` |  | Vitest unit and component tests (coverage from step 2) |
 | `build` |  | `next build`, then uploads `.next/` (without its cache) as an artifact. `include-hidden-files` is set because upload-artifact skips hidden folders by default |
 | `e2e` | `build` | Downloads the build into `.next/`, then Playwright with axe on desktop Chromium and mobile WebKit |
-| `lighthouse` | `build` | Downloads the build into `.next/`, then Lighthouse CI with the mobile budgets |
+| `lighthouse` | `build` | Downloads the build into `.next/`, then Lighthouse CI, mobile preset, 3 runs. Performance 90+ on the median run (`median-run`); accessibility, best practices and SEO 100 on every run (`pessimistic`, the worst run). Each run's scores go to the job log and summary, and the reports are uploaded on every run |
 | `database` (from step 2) |  | `supabase start`, apply migrations, run the pgTAP tests, load the seed |
 
 1. Every job installs Node from .nvmrc and runs `npm ci` with the npm cache (shared composite action `.github/actions/setup`).
