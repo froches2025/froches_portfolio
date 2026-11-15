@@ -1,5 +1,5 @@
 name: Set up Node and dependencies
-description: Installs the Node version from .nvmrc and runs npm ci with the npm cache.
+description: Installs the Node version from .nvmrc, runs npm ci with the npm cache, and sets a throwaway CRON_SECRET.
 runs:
   using: composite
   steps:
@@ -8,4 +8,8 @@ runs:
         node-version-file: .nvmrc
         cache: npm
     - run: npm ci
+      shell: bash
+    # The build validates CRON_SECRET. CI never calls the real route, so a random
+    # value per run is enough and no secret is stored in the repo.
+    - run: echo "CRON_SECRET=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
       shell: bash
