@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
-// Imported for its side effect: a missing or malformed variable fails `next build`.
-import "./src/lib/env";
+// A missing or malformed variable fails `next build`: importing env.ts checks
+// the public variables, and parseServerEnv checks the server-only secrets.
+import { parseServerEnv } from "./src/lib/env";
+
+parseServerEnv(process.env);
 
 const nextConfig: NextConfig = {};
 

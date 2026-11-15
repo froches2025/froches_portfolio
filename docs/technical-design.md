@@ -69,7 +69,7 @@ tests/unit/  tests/e2e/ Vitest and Playwright
 | @types/node, @types/react, @types/react-dom | 24.19.2, 19.3.0, 19.3.0 | Type definitions (added 13 Nov) |
 | class-variance-authority, clsx, tailwind-merge, tw-animate-css, lucide-react | 0.7.1, 2.1.1, 3.7.0, 1.4.0, 1.72.0 | Used by shadcn/ui, as in v1 (added 13 Nov). shadcn 4.23.0's init offers a new `cn` package instead of clsx and tailwind-merge; not adopted |
 
-Step 2 adds @vitest/coverage-v8 5.1.0 (approved 13 Nov). Slice 1b adds browser-image-compression 2.0.2. Slice 2 adds resend 6.38.0, @marsidev/react-turnstile 1.6.3 and @vercel/speed-insights 2.1.0. Versions are re-checked when each slice starts.
+Step 2 added @supabase/supabase-js 2.119.0, @supabase/ssr 0.12.7, supabase (CLI) 3.1.0 and @vitest/coverage-v8 5.1.0 (approved 13 Nov). `server-only` is not installed: Next.js 16 handles that import itself. Slice 1b adds browser-image-compression 2.0.2. Slice 2 adds resend 6.38.0, @marsidev/react-turnstile 1.6.3 and @vercel/speed-insights 2.1.0. Versions are re-checked when each slice starts.
 
 ## 2. Data model
 
@@ -104,7 +104,7 @@ Postgres on Supabase with row-level security on every table and a default of den
 | --- | --- | --- |
 | slug | text | Required, unique, lowercase words joined by hyphens |
 | title | text | Required, max 80 |
-| one\_liner | text | Required, max 160 |
+| one\_liner | text | Required, max 200 (raised from 160 on 15 Nov so the AidReady and LifeTrack one-liners fit unchanged) |
 | year | smallint | Required, 2015 to 2100 |
 | status | text | live, in\_development or archived |
 | live\_url, repo\_url | text | Optional, https only |
@@ -138,6 +138,27 @@ Deleting a project: the server action removes the image files from storage first
 | roles | title, organisation, start\_month date, end\_month date, detail, sort\_order | Leadership and community roles |
 | skills | group\_name, items text\[\], sort\_order | For example Languages: Python, TypeScript |
 
+### about\_facts (slice 1a, added 15 Nov)
+
+The fact cards on About (FR-3.3). The distance card is not a row: its content is worked out per visitor in code.
+
+| Column | Type | Rules |
+| --- | --- | --- |
+| title | text | Required, max 80 |
+| body\_md | text | Required, Markdown, max 600 |
+| link\_url | text | Optional. https, or a path on this site starting with one `/`. `//host` and `/\host` are refused because browsers open them as another site |
+| link\_label | text | Max 40; required exactly when link\_url is set |
+| doodle | text | Optional: trophy, bolt, checklist, yarn, pepper, pot or mic (the phone card illustrations) |
+| size | text | normal, wide or tall, default normal (desktop card size) |
+| sort\_order | integer | Required, unique |
+
+### Implementation notes (step 2)
+
+- `private.settings` holds `admin_github_id` (239020475, from `gh api users/froches2025 --jq .id`). The `private` schema is not exposed through the Data API, and the table has RLS on with no policies.
+- `is_admin()` reads `auth.identities` (provider `github`, matching provider\_id), never `user_metadata`, which users can edit themselves.
+- Every `sort_order` uniqueness (and `featured_order` among featured rows) is a deferrable constraint, so a reorder can swap positions in one transaction.
+- Every update policy checks `is_admin()` in both `using` and `with check`.
+
 ### Slice 2 tables (created later, listed so slice 1 leaves room)
 
 | Table | Columns | Rules |
@@ -151,7 +172,7 @@ Deleting a project: the server action removes the image files from storage first
 
 | Table | Visitors can read | Admin can | Server code (service key) |
 | --- | --- | --- | --- |
-| profile, experience, education, roles, skills | All rows | Read, write | Nothing |
+| profile, experience, education, roles, skills, about\_facts | All rows | Read, write | Nothing |
 | projects | Published rows | Read, write all | Nothing |
 | project\_images | Rows of published projects | Read, write all | Nothing |
 | contact\_messages | None | Read, update, delete | Insert after bot check |
@@ -162,9 +183,11 @@ Deleting a project: the server action removes the image files from storage first
 | Storage bucket | Visitors | Admin |
 | --- | --- | --- |
 | project-images | Read | Upload, replace, delete; images only (JPEG, PNG, WebP), 10 MB |
-| documents | Read | Upload, replace, delete; PDF up to 5 MB and the headshot image |
+| documents | Read | Upload, replace, delete; PDF, JPEG, PNG or WebP up to 5 MB: the resume, the headshot and certificate images (FR-3.4) |
 
-The slice 1a seed fills profile, projects, experience, education, roles and skills from the resume Favour approved on 12 Nov 2026. Nothing that is not in the resume goes into the seed.
+Buckets are public, so visitors read files through public URLs; no storage policy grants visitors anything, so the file list cannot be enumerated. Buckets and their policies are created by migration, so production gets them through `supabase db push`.
+
+The slice 1a seed (`supabase/seed.sql`) fills profile, projects, experience, education, roles, skills and about\_facts from Favour's v1 data files (synced to the resume on 12 Nov 2026), the About designs and her corrections of 15 Nov 2026. Nothing without a source goes into the seed; fields with no source stay empty.
 
 ## 3. Routes, server actions and endpoints
 
@@ -269,7 +292,7 @@ There are no long-running workers. Three short flows run in the background, and 
 
 ## 6. Auth, environments and environment variables
 
-There is one production Supabase project and no cloud dev project. Supabase Free allows two active projects across every organisation you own, and LifeTrack already uses one. Local work and CI run Supabase in Docker through the Supabase CLI.
+There is one production Supabase project and no cloud dev project. It runs in East US (North Virginia), us-east-1, at https://vkkygdflseadsodyqdbz.supabase.co. Supabase Free allows two active projects across every organisation you own, and LifeTrack already uses one. Local work and CI run Supabase in Docker through the Supabase CLI.
 
 ### Environments
 
@@ -291,18 +314,18 @@ There is one production Supabase project and no cloud dev project. Supabase Free
 
 ### Environment variables
 
-Validated at build and start by `src/lib/env.ts`. A missing or malformed value fails the build. Secrets live only in Vercel, GitHub secrets and a git-ignored .env.local; .env.example lists every name with no values.
+Validated at build and start by `src/lib/env.ts`. `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` must start with `sb_publishable_`, so a secret key can never be pasted into a public variable. A missing or malformed value fails the build. Secrets live only in Vercel, GitHub secrets and a git-ignored .env.local; .env.example lists every name with no values.
 
 | Name | Secret | Used by | Purpose | Slice |
 | --- | --- | --- | --- | --- |
 | NEXT\_PUBLIC\_SITE\_URL | No | App | Canonical URL: https://froches.tech in production | 1a |
 | NEXT\_PUBLIC\_SUPABASE\_URL | No | App | Supabase project URL | 1a |
 | NEXT\_PUBLIC\_SUPABASE\_PUBLISHABLE\_KEY | No | App | Public key; RLS limits it to published data | 1a |
-| CRON\_SECRET | Yes | Keep-alive route, GitHub Actions | Bearer token for /api/cron/keepalive | 1a |
+| CRON\_SECRET | Yes | Keep-alive route, GitHub Actions | Bearer token for /api/cron/keepalive, at least 32 characters. Server-only: read through `src/lib/server-env.ts`, validated at build by next.config.ts | 1a |
 | ADMIN\_ENABLED | No | App | true in local and production, false in previews | 1b |
-| ADMIN\_GITHUB\_ID | No | App, migration | Favour's numeric GitHub user ID | 1b |
+| ADMIN\_GITHUB\_ID | No | App | Favour's numeric GitHub user ID (239020475). The database copy lives in `private.settings`, set by migration; both must match | 1b |
 | ADMIN\_SESSION\_SECRET | Yes | App | Signs the last-activity cookie | 1b |
-| SUPABASE\_SECRET\_KEY | Yes | Server-only code | Inserts visitor submissions and counts after the bot check | 2 |
+| SUPABASE\_SECRET\_KEY | Yes | Local upload script (step 4), then server-only code | Step 4: uploads the resume and certificates from Favour's machine, read only from a git-ignored local file, never set in Vercel or CI. Slice 2: inserts visitor submissions and counts after the bot check | 1a (local only), 2 |
 | RATE\_LIMIT\_SALT | Yes | Server-only code | Salt for the one-way IP hash | 2 |
 | RESEND\_API\_KEY | Yes | Server-only code | Sends email | 2 |
 | EMAIL\_FROM | No | Server-only code | Sender address on froches.tech (exact address chosen in slice 2) | 2 |
@@ -330,7 +353,7 @@ Every PR to v2 or main must pass five gates: code checks, unit and component tes
 
 CI cannot complete a real GitHub OAuth sign-in. Local Supabase therefore seeds a test user with a GitHub identity whose ID matches ADMIN\_GITHUB\_ID in CI. This exists only in local and CI configs, never in production.
 
-Coverage target: 80% of lines in src/lib (proposed). Visual design is checked by people, not by snapshot tests.
+Coverage target: 80% of lines in src/lib, enforced by Vitest's coverage threshold from step 2. Visual design is checked by people, not by snapshot tests.
 
 ### CI pipeline (.github/workflows/ci.yml)
 
@@ -341,14 +364,14 @@ Runs on pull requests to v2 and main and on pushes to them. Each job is named af
 | `lint` |  | ESLint, Prettier format check, then `npm audit --omit=dev --audit-level=high`: a high or critical issue in a runtime dependency fails CI, while dev-only findings (for example in @lhci/cli) are reported but do not block |
 | `typecheck` |  | `next typegen`, then `tsc --noEmit` |
 | `commitlint` |  | Pull requests only: every commit in the PR, then the PR title. The title becomes the commit on v2 and main because PRs are squash-merged. It is passed to commitlint through an environment variable, never inlined in the script, so a crafted title cannot inject shell commands |
-| `unit` |  | Vitest unit and component tests (coverage from step 2) |
+| `unit` |  | Vitest unit and component tests with coverage; fails below 80% of lines in src/lib |
 | `build` |  | `next build`, then uploads `.next/` (without its cache) as an artifact. `include-hidden-files` is set because upload-artifact skips hidden folders by default |
 | `e2e` | `build` | Downloads the build into `.next/`, then Playwright with axe on desktop Chromium and mobile WebKit |
 | `lighthouse` | `build` | Downloads the build into `.next/`, then Lighthouse CI, mobile preset, 3 runs. Performance 90+ on the median run (`median-run`); accessibility, best practices and SEO 100 on every run (`pessimistic`, the worst run). Each run's scores go to the job log and summary, and the reports are uploaded on every run |
-| `database` (from step 2) |  | `supabase start`, apply migrations, run the pgTAP tests, load the seed |
+| `database` |  | `supabase start` with only Postgres, Auth and Storage (their schemas are under test): applies every migration and loads the seed, then `supabase test db` runs the pgTAP files in `supabase/tests/` |
 
 1. Every job installs Node from .nvmrc and runs `npm ci` with the npm cache (shared composite action `.github/actions/setup`).
-2. `NEXT_PUBLIC_SITE_URL` is set to http://localhost:3000 for the whole workflow; it is not a secret.
+2. Public values are set for the whole workflow (`NEXT_PUBLIC_SITE_URL` http://localhost:3000, a local Supabase URL and a placeholder publishable key; none is secret). The setup action writes a random `CRON_SECRET` per run, so no secret value sits in the repo.
 3. On failure, the Playwright report and Lighthouse results are uploaded as artifacts.
 4. From step 2, the build runs against the local Supabase.
 

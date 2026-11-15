@@ -14,8 +14,11 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  # Not a secret: the canonical URL for builds and tests on the runner.
+  # Not secrets: public values for builds and tests on the runner. No page reads
+  # the database yet, so the Supabase values only need to pass validation.
   NEXT_PUBLIC_SITE_URL: http://localhost:3000
+  NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci-placeholder
 
 jobs:
   lint:
@@ -63,6 +66,19 @@ jobs:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
       - run: npm test
+
+  database:
+    name: database
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup
+      # Starts Postgres with auth and storage (their schemas are under test),
+      # applies every migration and loads the seed.
+      - run: npx supabase start -x realtime,imgproxy,kong,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor
+      - run: npx supabase test db
+      - if: always()
+        run: npx supabase stop --no-backup
 
   build:
     name: build

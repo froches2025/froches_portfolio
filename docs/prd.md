@@ -208,7 +208,7 @@ Publishing in the admin panel writes to Supabase, then tells Next.js to rebuild 
 
 ## 6. Data model overview
 
-Ten content tables, one internal rate-limit table and two storage buckets. Visitors can read only published content. Only Favour's account can write content, and visitor submissions enter only through server actions after the bot check. Every column and rule is specified in the technical design.
+Eleven content tables, one internal rate-limit table and two storage buckets. Visitors can read only published content. Only Favour's account can write content, and visitor submissions enter only through server actions after the bot check. Every column and rule is specified in the technical design.
 
 | Table | Holds | Public can read | Written by | Slice |
 | --- | --- | --- | --- | --- |
@@ -219,6 +219,7 @@ Ten content tables, one internal rate-limit table and two storage buckets. Visit
 | education | Programme, institution, dates, detail, order | Yes | Admin | 1 |
 | roles | Leadership and community roles with dates and detail | Yes | Admin | 1 |
 | skills | Skill groups (languages, frontend, backend...) and their items | Yes | Admin | 1 |
+| about\_facts | Fact cards on About: title, short text, optional link, doodle and card size, order (added 15 Nov) | Yes | Admin | 1 |
 | contact\_messages | Name, email, message, read or archived, received time | No | Server action (insert), admin (read, update, delete) | 2 |
 | guestbook\_entries | Message, optional name, role and country code, pending or approved or rejected, times | Approved rows only | Server action (insert), admin (moderate) | 2 |
 | event\_counts | Event type, optional project, day, count. No IP or personal data. | No | Server action (increment), admin (read) | 2 |
