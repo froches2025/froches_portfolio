@@ -1,0 +1,136 @@
+/*
+ * Micro-interactions (FR-1.8), from docs/design/source. Transform and opacity
+ * only, so they run on the compositor. Off under prefers-reduced-motion and
+ * when MotionPreference marks the device as low-power (html[data-motion=reduced]).
+ */
+
+.mi-btn {
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mi-btn:hover {
+  transform: translateY(-2px);
+}
+.mi-btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.mi-link {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.25s ease;
+}
+.mi-link:hover,
+.mi-link:focus-visible,
+.mi-link[aria-current] {
+  background-size: 100% 1.5px;
+}
+
+.mi-card {
+  transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mi-card:hover {
+  transform: translateY(-4px) rotate(-0.4deg);
+}
+.mi-card:active {
+  transform: scale(0.985);
+}
+
+.mi-chip {
+  transition: transform 0.15s ease;
+}
+.mi-chip:hover {
+  transform: translateY(-1px);
+}
+
+@keyframes doodle-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translateY(-6px) rotate(calc(var(--r, 0deg) + 5deg));
+  }
+}
+.doodle {
+  transform: rotate(var(--r, 0deg));
+  animation: doodle-bob 5.5s ease-in-out infinite;
+}
+.mi-card:hover .doodle,
+.mi-card:active .doodle {
+  animation-duration: 1.4s;
+}
+
+/* Touch screens have no hover: keep the press state, drop the lift. */
+@media (hover: none) {
+  .mi-btn:hover,
+  .mi-card:hover,
+  .mi-chip:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mi-btn,
+  .mi-card,
+  .mi-chip,
+  .mi-link {
+    transition: none;
+  }
+  .mi-btn:hover,
+  .mi-btn:active,
+  .mi-card:hover,
+  .mi-card:active,
+  .mi-chip:hover {
+    transform: none;
+  }
+  .doodle {
+    animation: none;
+  }
+}
+
+html[data-motion="reduced"] {
+  .mi-btn,
+  .mi-card,
+  .mi-chip,
+  .mi-link {
+    transition: none;
+  }
+  .mi-btn:hover,
+  .mi-btn:active,
+  .mi-card:hover,
+  .mi-card:active,
+  .mi-chip:hover {
+    transform: none;
+  }
+  .doodle {
+    animation: none;
+  }
+}
+
+/* Page entrance (FR-1.7): fade up in order. Starts at near-zero opacity, not
+   zero, so the browser still treats the content as painted. */
+@keyframes entrance-fade-up {
+  from {
+    opacity: 0.01;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.entrance {
+  animation: entrance-fade-up 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--entrance-order, 0) * 70ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .entrance {
+    animation: none;
+  }
+}
+html[data-motion="reduced"] .entrance {
+  animation: none;
+}
