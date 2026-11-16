@@ -69,7 +69,7 @@ tests/unit/  tests/e2e/ Vitest and Playwright
 | @types/node, @types/react, @types/react-dom | 24.19.2, 19.3.0, 19.3.0 | Type definitions (added 13 Nov) |
 | class-variance-authority, clsx, tailwind-merge, tw-animate-css, lucide-react | 0.7.1, 2.1.1, 3.7.0, 1.4.0, 1.72.0 | Used by shadcn/ui, as in v1 (added 13 Nov). shadcn 4.23.0's init offers a new `cn` package instead of clsx and tailwind-merge; not adopted |
 
-Step 2 added @supabase/supabase-js 2.119.0, @supabase/ssr 0.12.7, supabase (CLI) 3.1.0 and @vitest/coverage-v8 5.1.0 (approved 13 Nov). `server-only` is not installed: Next.js 16 handles that import itself. Slice 1b adds browser-image-compression 2.0.2. Slice 2 adds resend 6.38.0, @marsidev/react-turnstile 1.6.3 and @vercel/speed-insights 2.1.0. Versions are re-checked when each slice starts.
+Step 3 added motion 14.13.0 and cmdk 1.1.1. Step 2 added @supabase/supabase-js 2.119.0, @supabase/ssr 0.12.7, supabase (CLI) 3.1.0 and @vitest/coverage-v8 5.1.0 (approved 13 Nov). `server-only` is not installed: Next.js 16 handles that import itself. Slice 1b adds browser-image-compression 2.0.2. Slice 2 adds resend 6.38.0, @marsidev/react-turnstile 1.6.3 and @vercel/speed-insights 2.1.0. Versions are re-checked when each slice starts.
 
 ## 2. Data model
 
@@ -265,7 +265,16 @@ Five public screens ship in 1a and six admin screens in 1b. Every screen is desi
 | About | Bio, experience timeline, education, leadership roles, skills, optional headshot | Download resume, email, social links | No headshot: layout without it |
 | 404 | Friendly message, links home and to projects | Navigate back | n/a |
 
-Across all public screens: desktop side navigation that highlights the section in view; compact menu on phones; command palette on Ctrl+K or Cmd+K with go-to-page and download-resume commands; going back restores scroll position (FR-1.4); skip-to-content link; dark and light themes following the device setting (proposed, decided in visual design).
+Across all public screens: desktop side navigation that highlights the section in view; compact menu on phones; command palette on Ctrl+K or Cmd+K with go-to-page and download-resume commands; going back restores scroll position (FR-1.4); skip-to-content link; dark and light themes following the device setting, with no toggle in slice 1a.
+
+Shell, as built in step 3:
+
+- Phone (below 1024 px): a header with the name and a 44 px "Open menu and search" button on every page.
+- Desktop, home (design 13): two columns. The left column is sticky and holds the hero, the section nav (About, Selected work, Experience; the section in view is marked with `aria-current` and the long marigold line), the actions, the social links and the Ctrl K hint.
+- Desktop, every other page (design 14): a top header with the name, Projects, About, Resume and a Ctrl K button.
+- Command palette (designs 11 and 12): one dialog opened by the phone menu button, the desktop hint and Ctrl K or Cmd K. A full-screen sheet on phones, a centred dialog on desktop. Search is focused on open, results filter as you type with a screen-reader count, Escape closes it and focus returns to whichever control opened it.
+- Motion: one CSS page entrance (content is in the server HTML and visible without JavaScript); contour lines drift with the scroll; CSS micro-interactions use transform and opacity only. All of it stops under `prefers-reduced-motion` or in low-power mode (Save-Data, 2 GB of memory or less, or 2 CPU cores or fewer), with identical content.
+- Icons: a contour mark in marigold on deep green, as `icon.svg` and a 180 px `apple-icon` generated at build with `next/og`.
 
 ### Admin (slice 1b)
 
