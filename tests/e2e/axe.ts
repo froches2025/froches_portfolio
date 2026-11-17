@@ -19,14 +19,19 @@ export async function expectNoSeriousViolations(
 ) {
   // Audit the settled page: mid-fade frames of the entrance have lower contrast
   // than the final state, and that is not what a visitor reads.
-  await page.waitForFunction(() =>
-    document
-      .getAnimations()
-      .filter(
-        (animation) =>
-          animation.effect?.getComputedTiming().iterations !== Infinity,
-      )
-      .every((animation) => animation.playState === "finished"),
+  await page.waitForFunction(
+    () =>
+      document
+        .getAnimations()
+        .filter(
+          (animation) =>
+            animation.effect?.getComputedTiming().iterations !== Infinity,
+        )
+        .every((animation) => animation.playState === "finished"),
+    null,
+    // A fixed interval, not requestAnimationFrame: WebKit can stop firing
+    // frames for a page it treats as hidden during parallel runs.
+    { polling: 100, timeout: 10_000 },
   );
   const results = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze();
   await testInfo.attach(`axe-${name}.json`, {
