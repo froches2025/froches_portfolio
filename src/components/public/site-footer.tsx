@@ -1,9 +1,6 @@
-export type SocialLinks = {
-  github?: string;
-  linkedin?: string;
-  x?: string;
-  email?: string;
-};
+import type { SocialLinks } from "@/lib/content/site";
+
+export type { SocialLinks };
 
 const SOURCE_URL = "https://github.com/froches2025/froches_portfolio";
 

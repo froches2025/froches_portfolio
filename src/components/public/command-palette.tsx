@@ -7,12 +7,9 @@ import { Dialog } from "radix-ui";
 import { CloseIcon } from "./icons";
 import { usePalette } from "./palette-provider";
 
-export type PaletteItem = {
-  label: string;
-  kind: "Page" | "Project" | "Action" | "Link";
-  href: string;
-  keywords?: readonly string[];
-};
+import type { PaletteItem } from "@/lib/content/site";
+
+export type { PaletteItem };
 
 // Announces how many results match, so screen-reader users hear the effect of typing.
 function ResultCount() {
