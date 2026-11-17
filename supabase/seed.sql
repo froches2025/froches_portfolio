@@ -3,11 +3,14 @@
 -- and corrections Favour gave on 15 Nov 2026. Fields with no source stay empty.
 -- Text is dollar-quoted so it matches the sources character for character.
 
-insert into public.profile (full_name, headline, location, bio_md, email, github_url, linkedin_url, x_url)
+insert into public.profile (full_name, headline, location, pitch, availability, bio_md, email, github_url, linkedin_url, x_url)
 values (
   'Favour Michael',
-  'Software Engineer',
+  -- Sentence case, as the design's kicker shows it (approved 17 Nov).
+  'Software engineer',
   'Kigali, Rwanda',
+  $t$I build and ship AI-powered products for African users, from a load-balanced web app on two servers to an installable app with push reminders.$t$,
+  $t$Open to internships, full-time, part-time and contract roles, remote or with relocation.$t$,
   $bio$I am a software engineer from Nigeria, studying Software Engineering at African Leadership University in Kigali as a Mastercard Foundation Scholar.
 
 I have production frontend experience as the sole frontend developer on a paid AI video editing SaaS, and I build full-stack projects in React, TypeScript, Python (FastAPI) and PostgreSQL.
@@ -20,32 +23,53 @@ On campus I co-lead the Claude Builders Club and run weekly AI fluency workshops
 );
 
 insert into public.projects
-  (slug, title, one_liner, year, status, live_url, repo_url, stack, approach_md,
-   is_published, is_featured, sort_order, featured_order)
+  (slug, title, one_liner, tagline, highlight, year, status, live_url, live_label, repo_url, repo_label,
+   built_at, stack, role_md, approach_md, outcome_md, is_published, is_featured, sort_order, featured_order)
 values
   ('aidready', 'AidReady',
    $t$Built a voice-first emergency first-aid web app, largely solo, in one day; placed top 5 of 35 teams at the Frontiers GenAI Hackathon (ALX Kigali, powered by Google and DeepMind).$t$,
-   2026, 'live', 'https://aidready-finder.froches.tech', null,
-   array['React', 'JavaScript', 'CSS'],
-   $t$Deployed AidReady Help Finder, an emergency facility locator, across two web servers behind an HAProxy load balancer.$t$,
+   $t$Voice-first emergency first-aid web app.$t$,
+   $t$Top 5 of 35 teams at the Frontiers GenAI Hackathon$t$,
+   2026, 'live', 'https://aidready-finder.froches.tech', 'Visit Help Finder', null, null,
+   'Frontiers GenAI Hackathon',
+   -- Real technologies only (Favour, 17 Nov); voice-first and two servers live in the copy.
+   array['React', 'JavaScript', 'CSS', 'HAProxy'],
+   $t$I built the app largely solo, in one day.$t$,
+   $t$AidReady is voice-first, so someone in an emergency can get first-aid guidance without typing. Its Help Finder locates emergency facilities and runs across two web servers behind an HAProxy load balancer.$t$,
+   $t$Placed top 5 of 35 teams at the Frontiers GenAI Hackathon at ALX Kigali, powered by Google and DeepMind.$t$,
    true, true, 1, 1),
   ('lifetrack', 'LifeTrack',
    $t$Designed and built a personal productivity PWA from a written PRD: React + TypeScript frontend, Python FastAPI backend, Supabase PostgreSQL, containerised with Docker and covered by unit tests.$t$,
-   -- Temporary Vercel URL from v1; lifetrack.froches.tech did not resolve on 14 Nov 2026.
-   2026, 'live', 'https://frontend-khaki-mu-72.vercel.app', null,
-   array['React', 'TypeScript', 'FastAPI', 'Supabase PostgreSQL', 'Docker'],
+   $t$Personal productivity app built from a written PRD.$t$,
+   $t$Syncs Canvas LMS assignments and sends push reminders$t$,
+   -- Temporary Vercel URL from v1; lifetrack.froches.tech did not resolve on 14 or 17 Nov 2026.
+   2026, 'live', 'https://frontend-khaki-mu-72.vercel.app', 'Visit site', null, null,
+   null,
+   array['React', 'TypeScript', 'FastAPI', 'Supabase', 'Docker'],
+   null,
    $t$Implemented Google sign-in, a Goal to Target to Task hierarchy for SMART weekly planning, hourly activity logging and mood journaling. Integrated the Canvas LMS API (personal access token) to sync assignments, due dates and grades, and Web Push notifications for reminders.$t$,
+   null,
    true, true, 2, 2),
   ('campusnav', 'CampusNav AI',
    $t$Built a multi-tenant campus navigation system using Claude Vision to read maps and A* pathfinding for routes, with a React frontend.$t$,
-   2026, 'in_development', null, 'https://github.com/froches2025/alu-campus-navigator',
-   array['React', 'Claude Vision'],
+   $t$Campus navigation that reads maps with Claude Vision.$t$,
+   $t$Offline-first for campuses with unreliable connectivity$t$,
+   2026, 'in_development', null, null, 'https://github.com/froches2025/alu-campus-navigator', 'View code',
+   null,
+   array['React', 'Claude Vision', 'A* pathfinding'],
+   null,
    $t$Designed offline-first, low-bandwidth behaviour for campuses with unreliable connectivity.$t$,
+   null,
    true, true, 3, 3),
   ('froches-pepper-sauce', 'Froches Pepper Sauce',
    $t$Built and launched a live brand site for a West African pepper sauce business in Aug 2026, which made its first paying sale.$t$,
-   2026, 'live', 'https://sauce.froches.tech', null,
+   $t$Brand site for a West African pepper sauce business.$t$,
+   $t$Made its first paying sale after launch in August 2026$t$,
+   2026, 'live', 'https://sauce.froches.tech', 'Visit site', null, null,
+   null,
    array['React', 'JavaScript', 'CSS'],
+   null,
+   null,
    null,
    true, true, 4, 4);
 
