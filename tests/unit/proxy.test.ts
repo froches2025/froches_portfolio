@@ -1,10 +1,8 @@
 // @vitest-environment node
 import { NextRequest } from "next/server";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
-vi.mock("@/generated/project-slugs.json", () => ({
-  default: ["aidready", "lifetrack"],
-}));
+// Slugs come from tests/unit/stubs/project-slugs.json (aliased in vitest.config.mts).
 
 const { proxy, config } = await import("@/proxy");
 
