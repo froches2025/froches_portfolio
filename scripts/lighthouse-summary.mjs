@@ -12,6 +12,7 @@ const rows = files.map((name) => {
   const report = JSON.parse(readFileSync(join(dir, name), "utf8"));
   const { categories: c, audits: a } = report;
   return [
+    new URL(report.finalDisplayedUrl ?? report.finalUrl).pathname,
     percent(c.performance.score),
     percent(c.accessibility.score),
     percent(c["best-practices"].score),
@@ -26,6 +27,7 @@ const rows = files.map((name) => {
 });
 
 const header = [
+  "Page",
   "Performance",
   "Accessibility",
   "Best practices",
