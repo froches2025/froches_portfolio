@@ -92,7 +92,7 @@ Fifty requirements in 11 groups. Every commit and PR cites the FR numbers it tou
 | --- | --- | --- |
 | FR-3.1 | About page tells Favour's story with bio, experience timeline, education, leadership roles and skills. Depth inspired by Josh Comeau's About page. | 1 |
 | FR-3.2 | A headshot is optional; the page works without one. | 1 |
-| FR-3.3 | Desktop About opens with a greeting, story and portrait, then a grid of fact cards inspired by Josh Comeau's About page. One card shows how far Kigali is from the visitor, worked out from Vercel's rough location headers through a small route that stores nothing; the page itself stays pre-built. Phone shows the same cards in one column (added 13 Nov). | 1a |
+| FR-3.3 | Desktop About opens with a greeting, story and portrait, then a grid of fact cards inspired by Josh Comeau's About page. One card shows how far Kigali is from the visitor, worked out from Vercel's rough location headers through a small route that stores nothing; the page itself stays pre-built. When the location is unknown or under 50 km away, the card shows only "I am from Nigeria and live in Kigali, Rwanda." (added 17 Nov). Phone shows the same cards in one column (added 13 Nov). | 1a |
 | FR-3.4 | Education and experience entries can show a View certificate link (ALX and HNG first). Certificate images are hosted by the site itself, not linked from Google Drive, so links never break (added 13 Nov). | 1a |
 
 ### FR-4 Resume

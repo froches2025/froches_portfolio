@@ -91,6 +91,8 @@ Postgres on Supabase with row-level security on every table and a default of den
 | full\_name | text | Required, max 80 |
 | headline | text | Required, max 120 |
 | location | text | Optional, max 80 |
+| pitch | text | Required, max 240: the hero pitch (added 17 Nov) |
+| availability | text | Optional, max 160: the line about roles Favour is open to (added 17 Nov) |
 | bio\_md | text | Required, Markdown, max 4,000 |
 | email | text | Required, valid email |
 | github\_url, linkedin\_url, x\_url | text | Optional, https only |
@@ -104,11 +106,15 @@ Postgres on Supabase with row-level security on every table and a default of den
 | --- | --- | --- |
 | slug | text | Required, unique, lowercase words joined by hyphens |
 | title | text | Required, max 80 |
-| one\_liner | text | Required, max 200 (raised from 160 on 15 Nov so the AidReady and LifeTrack one-liners fit unchanged) |
+| one\_liner | text | Required, max 200 (raised from 160 on 15 Nov so the AidReady and LifeTrack one-liners fit unchanged). Used for page descriptions |
+| tagline | text | Required, max 80: the short line on cards and under the case-study title (added 17 Nov) |
+| highlight | text | Optional, max 120: the accent line on cards (added 17 Nov) |
+| built\_at | text | Optional, max 80: shown as "Built at" on the case study (added 17 Nov) |
 | year | smallint | Required, 2015 to 2100 |
 | status | text | live, in\_development or archived |
 | live\_url, repo\_url | text | Optional, https only |
-| stack | text\[\] | Up to 12 tags, each max 30 |
+| live\_label, repo\_label | text | Optional, max 40: link text such as "Visit Help Finder"; "Visit site" and "View code" when empty (added 17 Nov) |
+| stack | text\[\] | Up to 12 tags, each max 30. Real technologies only (decided 17 Nov) |
 | problem\_md, role\_md, approach\_md, challenges\_md, outcome\_md | text | Optional Markdown case study sections, each max 4,000. Empty ones are hidden (FR-2.3) |
 | is\_published | boolean | Default false |
 | published\_at | timestamptz | Set on first publish |
@@ -195,12 +201,14 @@ Public pages are pre-rendered and cached by tag; admin saves refresh only the ta
 
 ### Public pages (pre-rendered, no database call per visit)
 
+Next.js Cache Components render the pages at build time. Every query is a `'use cache'` function with `cacheLife("max")` and a cache tag (`src/lib/content/queries.ts`), and every row is parsed by zod (`src/lib/validation/content.ts`) before a component sees it. A query error fails the build. `cacheLife("max")` lets a page refresh itself in the background after 30 days; when that refresh fails, the old page keeps being served.
+
 | Route | Cache tags | FRs | Slice |
 | --- | --- | --- | --- |
 | / | profile, projects | FR-1.1, 1.2, 1.3, 1.5, 9.1, 10.1 | 1a |
 | /projects | projects | FR-2.1 | 1a |
-| /projects/\[slug\] | projects, project:\[slug\] | FR-2.3 to 2.6. Unknown or draft slug returns 404; new published slugs render on first request, then stay cached | 1a |
-| /about | profile, about | FR-3.1, 3.2 | 1a |
+| /projects/\[slug\] | projects, project:\[slug\] | FR-2.3 to 2.6. Every published slug is prerendered (`generateStaticParams`, `ensureStatic = "navigation"`). Unknown and draft slugs never reach the page: `src/proxy.ts` (matcher `/projects/:slug` only) checks a build-time allowlist and rewrites them to the prerendered 404 with status 404, so they cause no database call even when Supabase is paused. The allowlist is `src/generated/project-slugs.json`, written before each build by `scripts/write-project-slugs.mjs` (git-ignored; the build fails if the query fails or returns no slugs) | 1a |
+| /about | profile, about | FR-3.1 to 3.4. Phone and desktop show the same 11 fact cards, the distance card and Leadership (PRD over designs 07 and 14, confirmed 17 Nov) | 1a |
 | /privacy | none (static) | NFR-6 | 1a |
 | /sitemap.xml, /robots.txt, /opengraph-image | projects | FR-10.1 to 10.3 | 1a |
 | /guestbook | guestbook | FR-8.5 | 2 |
@@ -209,7 +217,8 @@ Public pages are pre-rendered and cached by tag; admin saves refresh only the ta
 
 | Route | Does | Auth | FRs | Slice |
 | --- | --- | --- | --- | --- |
-| GET /resume | Redirects to the current resume file. Reads profile through the cached query, so no database call per visit. Slice 2 adds a download count | Public | FR-4.1, 4.2, 9.2 | 1a |
+| GET /resume | 307 to the current resume in the documents bucket, or 404 while none is uploaded (resume buttons are hidden then). Prerendered from the cached profile, so no database call per visit. Slice 2 adds a download count | Public | FR-4.1, 4.2, 9.2 | 1a |
+| GET /api/distance | Rounded distance from Kigali (nearest 10 km) from Vercel's `x-vercel-ip-latitude` and `x-vercel-ip-longitude` headers; `{ km: null }` without them. `Cache-Control: private, no-store`; stores and logs nothing. The card shows only its first sentence when km is null or under 50 | Public | FR-3.3 | 1a |
 | GET /auth/callback | Completes GitHub sign-in, then signs out and denies anyone who is not Favour | Public | FR-5.1 | 1b |
 | POST /api/events | Counts project link clicks sent with sendBeacon; rate-limited | Public | FR-9.2 | 2 |
 | GET /api/cron/keepalive | Runs a tiny query and purges old rate-limit rows. Called by GitHub Actions with a secret bearer token | CRON\_SECRET | NFR-4, NFR-5 | 1a (keep-alive), 2 (purge) |
@@ -218,7 +227,7 @@ Public pages are pre-rendered and cached by tag; admin saves refresh only the ta
 
 | From | To | Type |
 | --- | --- | --- |
-| /resume-favour-michael.pdf | /resume | Permanent, keeps the v1 link alive (FR-4.2) |
+| /resume-favour-michael.pdf | /resume | Permanent, keeps the v1 link alive (FR-4.2). The PDF moved out of `public/` to `docs/content/resume/`, so the redirect always applies |
 | Any path on portfolio.froches.tech | Same path on froches.tech | Permanent, set as a Vercel domain redirect (FR-11.2) |
 
 ### Admin pages (dynamic, never cached, noindex)
@@ -296,6 +305,7 @@ There are no long-running workers. Three short flows run in the background, and 
 &#91;embedded content: Background jobs · 3 flows, 4 steps each\]
 
 - **Publish and refresh:** the server action refreshes only the cache tags it touched. Next.js rebuilds the page on the next visit and keeps serving the old copy until the new one is ready.
+- **New project (slice 1b, decided 17 Nov):** unknown case-study slugs are answered from a build-time allowlist (section 3), so a newly published project's URL would be a 404 until the next build. Publishing a project whose slug is new therefore calls a Vercel deploy hook, which rebuilds the site and refreshes the allowlist; edits to existing projects still refresh by cache tag without a redeploy. The deploy hook URL is a secret: it lives only in Vercel's environment variables (`VERCEL_DEPLOY_HOOK_URL`, server-only), never in the repo, GitHub or the browser.
 - **Keep-alive:** a GitHub Actions schedule calls the keep-alive route once a day at 04:17 UTC (proposed), well inside Supabase's one-week pause window. A failed run emails Favour through GitHub's normal notifications.
 - **Visitor message (slice 2):** the message is saved before any email is sent, so a Resend outage or the 100-a-day limit never loses a message. Email failures are logged and shown in the admin inbox.
 
@@ -334,6 +344,7 @@ Validated at build and start by `src/lib/env.ts`. `NEXT_PUBLIC_SUPABASE_PUBLISHA
 | ADMIN\_ENABLED | No | App | true in local and production, false in previews | 1b |
 | ADMIN\_GITHUB\_ID | No | App | Favour's numeric GitHub user ID (239020475). The database copy lives in `private.settings`, set by migration; both must match | 1b |
 | ADMIN\_SESSION\_SECRET | Yes | App | Signs the last-activity cookie | 1b |
+| VERCEL\_DEPLOY\_HOOK\_URL | Yes | Server-only code | Rebuilds the site when a project with a new slug is published (section 5). Vercel env only | 1b |
 | SUPABASE\_SECRET\_KEY | Yes | Local upload script (step 4), then server-only code | Step 4: uploads the resume and certificates from Favour's machine, read only from a git-ignored local file, never set in Vercel or CI. Slice 2: inserts visitor submissions and counts after the bot check | 1a (local only), 2 |
 | RATE\_LIMIT\_SALT | Yes | Server-only code | Salt for the one-way IP hash | 2 |
 | RESEND\_API\_KEY | Yes | Server-only code | Sends email | 2 |
@@ -343,6 +354,21 @@ Validated at build and start by `src/lib/env.ts`. `NEXT_PUBLIC_SUPABASE_PUBLISHA
 | TURNSTILE\_SECRET\_KEY | Yes | Server-only code | Verifies Turnstile tokens | 2 |
 
 GitHub Actions secrets: KEEPALIVE\_URL and CRON\_SECRET. The GitHub OAuth client ID and secret are stored in Supabase's auth provider settings, never in the repo. Allowed redirect URLs: http://localhost:3000 and https://froches.tech.
+
+### Production setup (Favour runs these; Claude Code runs no remote command)
+
+```bash
+npx supabase login                                     # once, opens the browser
+npx supabase link --project-ref vkkygdflseadsodyqdbz   # asks for the database password
+npx supabase db push --dry-run                         # lists the 4 migrations it will apply
+npx supabase db push --include-seed                    # applies the migrations, then supabase/seed.sql
+node scripts/upload-assets.mjs --dry-run
+node scripts/upload-assets.mjs
+```
+
+Then redeploy on Vercel. Run `--include-seed` once only: the seed uses plain inserts, so a second run stops on unique keys rather than duplicating rows. The pgTAP suite is not run against production (its helpers would create a `tests` schema there).
+
+`scripts/upload-assets.mjs` uploads `docs/content/resume/resume-favour-michael.pdf` to `documents/resume/favour-michael.pdf` and the ALX and HNG certificates to `documents/certificates/`. It then sets `profile.resume_path` and the two `certificate_path` values. It reads `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SECRET_KEY` from the git-ignored `.env.production.local` and never prints the key. It is safe to re-run: unchanged files (same SHA-256) are skipped, and `resume_updated_at` only moves when the PDF changes.
 
 ## 7. Testing scope and CI pipeline
 
@@ -374,9 +400,9 @@ Runs on pull requests to v2 and main and on pushes to them. Each job is named af
 | `typecheck` |  | `next typegen`, then `tsc --noEmit` |
 | `commitlint` |  | Pull requests only: every commit in the PR, then the PR title. The title becomes the commit on v2 and main because PRs are squash-merged. It is passed to commitlint through an environment variable, never inlined in the script, so a crafted title cannot inject shell commands |
 | `unit` |  | Vitest unit and component tests with coverage; fails below 80% of lines in src/lib |
-| `build` |  | `next build`, then uploads `.next/` (without its cache) as an artifact. `include-hidden-files` is set because upload-artifact skips hidden folders by default |
-| `e2e` | `build` | Downloads the build into `.next/`, then Playwright with axe on desktop Chromium and mobile WebKit |
-| `lighthouse` | `build` | Downloads the build into `.next/`, then Lighthouse CI, mobile preset, 3 runs. Performance 90+ on the median run (`median-run`); accessibility, best practices and SEO 100 on every run (`pessimistic`, the worst run). Each run's scores go to the job log and summary, and the reports are uploaded on every run |
+| `build` |  | Starts local Supabase (Postgres, Auth, Storage, Kong, PostgREST), uses its publishable key, then `npm run build`: the prebuild writes the slug allowlist and the pages prerender from the seeded database. Uploads `.next/` (without its cache) as an artifact; `include-hidden-files` is set because upload-artifact skips hidden folders by default |
+| `e2e` | `build` | Downloads the build into `.next/`, then Playwright with axe on desktop Chromium and mobile WebKit, on every page in light and dark, with and without reduced motion. There is no database in this job, so the unknown-slug tests prove those 404s make no query |
+| `lighthouse` | `build` | Downloads the build into `.next/`, starts `next start`, sends one warm-up request to each audited URL, then Lighthouse CI on `/`, `/projects/aidready` and `/about`, mobile preset, 3 runs each. Performance 90+ on the median run (`median-run`); accessibility, best practices and SEO 100 on every run (`pessimistic`, the worst run). Each run's scores go to the job log and summary, and the reports are uploaded on every run |
 | `database` |  | `supabase start` with only Postgres, Auth and Storage (their schemas are under test): applies every migration and loads the seed, then `supabase test db` runs the pgTAP files in `supabase/tests/` |
 
 1. Every job installs Node from .nvmrc and runs `npm ci` with the npm cache (shared composite action `.github/actions/setup`).
