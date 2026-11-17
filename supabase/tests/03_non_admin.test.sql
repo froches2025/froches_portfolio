@@ -3,8 +3,8 @@
 begin;
 select plan(24);
 
-insert into public.projects (slug, title, one_liner, year, status, sort_order)
-values ('draft-project', 'Draft', 'Not ready yet.', 2026, 'live', 100);
+insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order)
+values ('draft-project', 'Draft', 'Tagline.', 'Not ready yet.', 2026, 'live', 100);
 
 -- is_admin() is false for every identity that is not Favour's GitHub account.
 select tests.authenticate_as(tests.create_user_without_identity());
@@ -32,13 +32,13 @@ select is_empty(
 );
 
 select throws_ok(
-  $$insert into public.projects (slug, title, one_liner, year, status, sort_order)
-    values ('spam', 'Spam', 'Spam.', 2026, 'live', 101)$$,
+  $$insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order)
+    values ('spam', 'Spam', 'Tagline.', 'Spam.', 2026, 'live', 101)$$,
   '42501', null, 'a non-admin cannot insert projects'
 );
 select throws_ok(
-  $$insert into public.profile (singleton, full_name, headline, bio_md, email)
-    values (true, 'X', 'X', 'X', 'x@example.test')$$,
+  $$insert into public.profile (singleton, full_name, headline, pitch, bio_md, email)
+    values (true, 'X', 'X', 'X', 'X', 'x@example.test')$$,
   '42501', null, 'a non-admin cannot insert profile'
 );
 select throws_ok(

@@ -5,8 +5,8 @@ select plan(29);
 
 -- Fixture, written as the table owner: one draft with an image, and an image
 -- on a published project.
-insert into public.projects (slug, title, one_liner, year, status, sort_order)
-values ('draft-project', 'Draft', 'Not ready yet.', 2026, 'live', 100);
+insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order)
+values ('draft-project', 'Draft', 'Tagline.', 'Not ready yet.', 2026, 'live', 100);
 insert into public.project_images (project_id, storage_path, alt, width, height, sort_order)
 values
   ((select id from public.projects where slug = 'draft-project'), 'test/draft.png', 'Draft image', 10, 10, 1),
@@ -36,13 +36,13 @@ select isnt_empty($$select 1 from public.about_facts$$, 'visitors read about fac
 
 -- Inserts are refused outright.
 select throws_ok(
-  $$insert into public.profile (singleton, full_name, headline, bio_md, email)
-    values (true, 'X', 'X', 'X', 'x@example.test')$$,
+  $$insert into public.profile (singleton, full_name, headline, pitch, bio_md, email)
+    values (true, 'X', 'X', 'X', 'X', 'x@example.test')$$,
   '42501', null, 'visitors cannot insert profile'
 );
 select throws_ok(
-  $$insert into public.projects (slug, title, one_liner, year, status, sort_order)
-    values ('spam', 'Spam', 'Spam.', 2026, 'live', 101)$$,
+  $$insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order)
+    values ('spam', 'Spam', 'Tagline.', 'Spam.', 2026, 'live', 101)$$,
   '42501', null, 'visitors cannot insert projects'
 );
 select throws_ok(
@@ -97,7 +97,7 @@ select is(tests.rows_affected($$delete from public.skills$$), 0,
 
 reset role;
 select is(
-  (select headline from public.profile), 'Software Engineer',
+  (select headline from public.profile), 'Software engineer',
   'profile is unchanged after the visitor attempts'
 );
 select is(

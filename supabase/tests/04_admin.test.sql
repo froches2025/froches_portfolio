@@ -3,8 +3,8 @@
 begin;
 select plan(24);
 
-insert into public.projects (slug, title, one_liner, year, status, sort_order)
-values ('draft-project', 'Draft', 'Not ready yet.', 2026, 'live', 100);
+insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order)
+values ('draft-project', 'Draft', 'Tagline.', 'Not ready yet.', 2026, 'live', 100);
 
 select tests.authenticate_as(tests.create_user('239020475'));
 select is(public.is_admin(), true, 'Favour''s GitHub identity is admin');
