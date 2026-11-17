@@ -57,8 +57,10 @@ tests/unit/ tests/e2e/
 - **Accessibility:** WCAG 2.2 AA. Real buttons and links, visible focus, labelled inputs, alt text required, touch targets at least 44 px, contrast checked in both themes. Going back restores scroll position (FR-1.4).
 - **Motion:** native scrolling only, no smooth-scroll or scroll-jacking library. Scroll-linked motion with `motion`, one orchestrated entrance per page, micro-interactions CSS-first using transform and opacity only, press states on touch, everything off under `prefers-reduced-motion`. Motion never blocks reading or clicking.
 - **Design tokens (from docs/design):**
-  - Light: ground #F1F4F0, surface #FFFFFF, ink #15231E, muted #4F5D57, line #D3DBD5, accent text #8A5A00, accent fill #E9A93B, contour #BCC9C1.
-  - Dark: ground #10201B, surface #182C26, ink #E8EEE9, muted #A3B5AD, line #2A403A, accent text and fill #F2B544, contour #2D4B42.
+  - Light: ground #F1F4F0, surface #FFFFFF, ink #15231E, muted #4F5D57, line #D3DBD5, accent text #8A5A00, accent fill #E9A93B, on-accent #15231E, contour #BCC9C1.
+  - Dark: ground #10201B, surface #182C26, ink #E8EEE9, muted #A3B5AD, line #2A403A, accent text and fill #F2B544, on-accent #10201B, contour #2D4B42.
+  - On-accent is the text on marigold buttons. The focus ring is accent text in light (the marigold ring is 1.86:1 on the light ground, under WCAG's 3:1) and accent fill in dark.
+  - Tokens live in `src/app/globals.css` only; the two icon files repeat the hex values because icons cannot read CSS variables.
   - Type: Schibsted Grotesk only (400 to 800) via next/font. Radii 12, 14, 16, 20, 24 px. Signature motif: topographic contour lines; phone fact cards carry floating doodles.
   - Use tokens, never raw hex in components.
 - **Content truth:** nothing may contradict Favour's resume. No placeholder copy ships; missing content is hidden or flagged to Favour.

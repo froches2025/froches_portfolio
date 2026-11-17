@@ -1,0 +1,20 @@
+import type { ReactNode } from "react";
+import { ContourLines } from "@/components/motion/contour-lines";
+
+// Home on desktop (design 13): a sticky left column with the hero and section
+// nav beside the scrolling content. On phones the two stack.
+export function HomeLayout({ intro, children }: { intro: ReactNode; children?: ReactNode }) {
+  return (
+    <div className="mx-auto w-full max-w-[1240px] lg:grid lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)] lg:gap-16 lg:px-12">
+      <div className="relative isolate px-5 pt-9 pb-12 lg:sticky lg:top-0 lg:h-dvh lg:px-0 lg:pt-24 lg:pb-16">
+        {/* On desktop the field bleeds 160 px left of the column, as in design 13. */}
+        <ContourLines
+          areaClassName="inset-0 lg:-left-40"
+          className="-top-10 -left-40 lg:left-0"
+        />
+        <div className="relative z-[1] flex flex-col gap-5 lg:gap-6">{intro}</div>
+      </div>
+      <div className="min-w-0 px-5 pb-16 lg:px-0 lg:pt-24">{children}</div>
+    </div>
+  );
+}

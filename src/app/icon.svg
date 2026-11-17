@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Contour mark: token colours (dark ground #10201B, accent fill #E9A93B). An icon cannot read CSS variables, so the values are written here. -->
+  <rect width="64" height="64" rx="14" fill="#10201B"/>
+  <g fill="none" stroke="#E9A93B" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="3.2" d="M32 9c10 0 21 6 22 17 1 12-6 25-20 27S9 46 9 33 21 9 32 9z"/>
+    <path stroke-width="3.2" d="M32 19c6 0 13 4 13 11s-4 15-12 15-14-5-14-12 6-14 13-14z"/>
+    <path stroke-width="3.6" d="M32 28c3 0 5 2 5 4s-2 5-5 5-5-2-5-4 2-5 5-5z"/>
+  </g>
+</svg>
