@@ -100,10 +100,22 @@ test("About shows the doodles and the distance card's fallback without location 
       exact: true,
     }),
   ).toBeVisible();
-  // The other states stay in the DOM to hold the card's size, hidden.
+  // The other states stay in the DOM to hold the card's size, hidden with
+  // visibility: hidden (not opacity) and aria-hidden, so assistive tech
+  // reaches one sentence only.
   for (const line of await page.getByText(/Nothing is stored/).all()) {
     await expect(line).toBeHidden();
   }
+  const inactive = card.locator("[data-layer]:not([data-layer=unknown])");
+  await expect(inactive).toHaveCount(2);
+  for (const layer of await inactive.all()) {
+    await expect(layer).toHaveAttribute("aria-hidden", "true");
+    await expect(layer).toHaveCSS("visibility", "hidden");
+  }
+  await expect(card.locator("[data-layer=unknown]")).toHaveCSS(
+    "visibility",
+    "visible",
+  );
   await expect(page.getByRole("heading", { name: "Leadership" })).toBeVisible();
 });
 

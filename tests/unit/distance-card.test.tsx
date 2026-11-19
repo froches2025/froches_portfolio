@@ -1,4 +1,4 @@
-import { cleanup, render, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DistanceCard } from "@/components/public/distance-card";
 
@@ -92,6 +92,37 @@ describe("DistanceCard", () => {
         expect(layer.classList.contains("invisible")).toBe(!active);
         expect(layer.getAttribute("aria-hidden")).toBe(active ? null : "true");
       }
+    },
+  );
+
+  // Roles come from the accessibility tree, which leaves out aria-hidden
+  // subtrees, so this is what a screen reader can reach: one state only.
+  // (The browser-side visibility: hidden is checked in tests/e2e/pages.spec.ts.)
+  it.each([
+    [
+      3110,
+      "far",
+      [
+        "I am from Nigeria and live in Kigali, Rwanda, about 3,110 km from you.",
+        PRIVACY,
+      ],
+    ],
+    [
+      40,
+      "near",
+      [
+        "I am from Nigeria and live in Kigali, Rwanda, which makes us practically neighbours.",
+        PRIVACY,
+      ],
+    ],
+    [null, "unknown", ["I am from Nigeria and live in Kigali, Rwanda."]],
+  ] as const)(
+    "exposes only the %s km sentence to assistive tech",
+    async (km, state, sentences) => {
+      await renderSettled(km, state);
+      expect(
+        screen.getAllByRole("paragraph").map((p) => p.textContent),
+      ).toEqual(sentences);
     },
   );
 });
