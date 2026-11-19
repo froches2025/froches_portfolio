@@ -8,8 +8,10 @@ test.skip(
   "the sticky two-column layout is desktop only",
 );
 
+// 1536x768 is a 1920x1080 laptop at Windows' 125% scaling.
 for (const viewport of [
   { width: 1366, height: 768 },
+  { width: 1536, height: 768 },
   { width: 1440, height: 900 },
 ]) {
   test(`home column fits and clears the footer at ${viewport.width}x${viewport.height}`, async ({
@@ -29,6 +31,11 @@ for (const viewport of [
     expect(socialsBox.y + socialsBox.height).toBeLessThanOrEqual(
       viewport.height,
     );
+
+    // Short windows drop the Ctrl K hint to make room; tall ones keep it.
+    const hint = page.getByText("Press Ctrl K to jump anywhere.");
+    if (viewport.height < 900) await expect(hint).toBeHidden();
+    else await expect(hint).toBeVisible();
 
     // The footer does not repeat them on desktop home.
     await expect(footer.getByRole("link", { name: /^GitHub/ })).toBeHidden();

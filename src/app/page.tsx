@@ -49,7 +49,7 @@ export default async function HomePage() {
         </p>
       </Entrance>
       <Entrance order={1}>
-        <h1 className="text-[60px] leading-[0.92] font-extrabold tracking-[-0.04em] lg:text-[88px] lg:leading-[0.9] lg:tracking-[-0.045em] lg:short:text-[68px]">
+        <h1 className="text-[60px] leading-[0.92] font-extrabold tracking-[-0.04em] lg:text-[88px] lg:leading-[0.9] lg:tracking-[-0.045em]">
           Favour
           <br />
           Michael
@@ -70,7 +70,7 @@ export default async function HomePage() {
 
       <Entrance
         order={3}
-        className="mt-2 flex flex-col gap-3 lg:mt-4 lg:flex-row lg:flex-wrap lg:short:mt-1"
+        className="mt-2 flex flex-col gap-3 lg:mt-4 lg:flex-row lg:flex-wrap lg:short:mt-0"
       >
         <Link href="/projects" className={`${primaryButton} lg:hidden`}>
           View projects
@@ -96,7 +96,7 @@ export default async function HomePage() {
 
       <ul
         data-home-socials=""
-        className="mt-6 hidden flex-wrap gap-5 lg:flex lg:short:mt-2"
+        className="mt-6 hidden flex-wrap gap-5 lg:flex lg:short:mt-0"
       >
         {(
           [
@@ -118,7 +118,7 @@ export default async function HomePage() {
           ) : null,
         )}
       </ul>
-      <p className="mt-2 hidden text-sm text-muted lg:block lg:short:mt-0">
+      <p className="mt-2 hidden text-sm text-muted lg:block lg:short:hidden">
         Press Ctrl K to jump anywhere.
       </p>
     </>

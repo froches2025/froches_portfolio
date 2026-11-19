@@ -5,7 +5,7 @@
 
 /* Short desktop windows: the sticky home column tightens so it fits the
    viewport. At full size it is 894 px tall (measured at 1440 wide), so
-   anything shorter than 900 px uses the tight sizes (650 px). */
+   anything shorter than 900 px uses the tight sizes. */
 @custom-variant short (@media (max-height: 899px));
 
 /*
