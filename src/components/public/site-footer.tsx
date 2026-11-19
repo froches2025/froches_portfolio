@@ -1,10 +1,11 @@
 import type { SocialLinks } from "@/lib/content/site";
+import { SiteLink } from "./site-link";
 
 export type { SocialLinks };
 
 const SOURCE_URL = "https://github.com/froches2025/froches_portfolio";
 
-// FR-1.5. Links come from the profile (wired in step 4); each is hidden when absent.
+// FR-1.5. Links come from the profile; each is hidden when absent.
 export function SiteFooter({ links = {} }: { links?: SocialLinks }) {
   const items = [
     links.github ? { href: links.github, label: "GitHub" } : null,
@@ -19,18 +20,24 @@ export function SiteFooter({ links = {} }: { links?: SocialLinks }) {
         <ul className="flex flex-wrap gap-5">
           {items.map((item) => (
             <li key={item.label}>
-              <a href={item.href} className="mi-link text-base font-semibold">
+              <SiteLink
+                href={item.href}
+                className="mi-link inline-flex items-center gap-1.5 text-base font-semibold"
+              >
                 {item.label}
-              </a>
+              </SiteLink>
             </li>
           ))}
         </ul>
       ) : null}
       <p className="text-sm leading-normal text-muted">
         Built with Next.js and Supabase.{" "}
-        <a href={SOURCE_URL} className="underline underline-offset-2">
+        <SiteLink
+          href={SOURCE_URL}
+          className="inline-flex items-center gap-1 underline underline-offset-2"
+        >
           Read the source on GitHub
-        </a>
+        </SiteLink>
         .
       </p>
     </footer>

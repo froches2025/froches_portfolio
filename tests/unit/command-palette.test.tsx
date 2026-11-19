@@ -41,6 +41,7 @@ const items: PaletteItem[] = [
   { label: "Home", kind: "Page", href: "/" },
   { label: "Projects", kind: "Page", href: "/projects" },
   { label: "About", kind: "Page", href: "/about" },
+  { label: "GitHub", kind: "Link", href: "https://github.com/froches2025" },
 ];
 
 function Opener() {
@@ -125,6 +126,22 @@ describe("CommandPalette", () => {
     fireEvent.keyDown(input, { key: "Enter" });
     expect(push).toHaveBeenCalledWith("/about");
     expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("opens another site in a new tab, not in place of the page", () => {
+    const open = vi.spyOn(window, "open").mockImplementation(() => null);
+    renderPalette();
+    pressShortcut({ ctrlKey: true });
+    const input = screen.getByRole("combobox");
+    fireEvent.change(input, { target: { value: "github" } });
+    fireEvent.keyDown(input, { key: "Enter" });
+    expect(open).toHaveBeenCalledWith(
+      "https://github.com/froches2025",
+      "_blank",
+      "noopener,noreferrer",
+    );
+    expect(push).not.toHaveBeenCalled();
+    open.mockRestore();
   });
 
   it("closes on Escape and returns focus to the opener", async () => {

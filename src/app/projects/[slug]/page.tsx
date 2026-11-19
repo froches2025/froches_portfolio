@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Entrance } from "@/components/motion/entrance";
 import { Gallery } from "@/components/public/gallery";
-import { ExternalIcon } from "@/components/public/icons";
+import { SiteLink } from "@/components/public/site-link";
 import { paragraphs, statusLabel } from "@/lib/content/format";
 import {
   getProjectBySlug,
@@ -167,22 +167,20 @@ export default async function CaseStudyPage({
       {project.live_url || project.repo_url ? (
         <Entrance order={3} className="mt-6 flex flex-col gap-3 sm:flex-row">
           {project.live_url ? (
-            <a
+            <SiteLink
               href={project.live_url}
               className="mi-btn flex h-[52px] items-center justify-center gap-2 rounded-[14px] bg-accent-fill px-6 text-[17px] font-bold text-on-accent"
             >
               {project.live_label ?? "Visit site"}
-              <ExternalIcon />
-            </a>
+            </SiteLink>
           ) : null}
           {project.repo_url ? (
-            <a
+            <SiteLink
               href={project.repo_url}
               className="mi-btn flex h-[52px] items-center justify-center gap-2 rounded-[14px] border-[1.5px] border-ink px-6 text-[17px] font-semibold"
             >
               {project.repo_label ?? "View code"}
-              <ExternalIcon />
-            </a>
+            </SiteLink>
           ) : null}
         </Entrance>
       ) : null}

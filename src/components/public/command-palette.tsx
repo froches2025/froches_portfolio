@@ -7,6 +7,7 @@ import { Dialog } from "radix-ui";
 import { CloseIcon } from "./icons";
 import { usePalette } from "./palette-provider";
 
+import { isExternalLink } from "@/lib/content/format";
 import type { PaletteItem } from "@/lib/content/site";
 
 export type { PaletteItem };
@@ -33,6 +34,9 @@ export function CommandPalette({ items }: { items: readonly PaletteItem[] }) {
     setOpen(false);
     if (item.href.startsWith("/")) {
       router.push(item.href);
+    } else if (isExternalLink(item.href)) {
+      // Same rule as SiteLink: other sites open in a new tab.
+      window.open(item.href, "_blank", "noopener,noreferrer");
     } else {
       window.location.assign(item.href);
     }

@@ -4,6 +4,7 @@ import { Entrance } from "@/components/motion/entrance";
 import { DistanceCard } from "@/components/public/distance-card";
 import { FactCard } from "@/components/public/fact-card";
 import { PlaceholderFrame } from "@/components/public/placeholder-frame";
+import { SiteLink } from "@/components/public/site-link";
 import { Timeline, TimelineItem } from "@/components/public/timeline";
 import { formatMonthRange, paragraphs } from "@/lib/content/format";
 import { getAbout, getProfile } from "@/lib/content/queries";
@@ -20,13 +21,12 @@ export const metadata: Metadata = {
 function Certificate({ path, name }: { path: string | null; name: string }) {
   if (!path) return null;
   return (
-    <a
+    <SiteLink
       href={publicStorageUrl("documents", path)}
-      aria-label={`View certificate: ${name}`}
-      className="mi-link mt-2 inline-block text-[15px] font-semibold text-accent-text"
+      className="mi-link mt-2 inline-flex items-center gap-1.5 self-start text-[15px] font-semibold text-accent-text"
     >
-      View certificate
-    </a>
+      View certificate<span className="sr-only">: {name}</span>
+    </SiteLink>
   );
 }
 

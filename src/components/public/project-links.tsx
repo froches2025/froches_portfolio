@@ -1,4 +1,4 @@
-import { ExternalIcon } from "./icons";
+import { SiteLink } from "./site-link";
 import type { Project } from "@/lib/validation/content";
 
 // The live site and code links with the labels from the content, or a plain
@@ -7,22 +7,20 @@ export function ProjectLinks({ project }: { project: Project }) {
   return (
     <>
       {project.live_url ? (
-        <a
+        <SiteLink
           href={project.live_url}
           className="mi-link inline-flex items-center gap-1.5 text-base font-semibold text-accent-text"
         >
           {project.live_label ?? "Visit site"}
-          <ExternalIcon />
-        </a>
+        </SiteLink>
       ) : null}
       {project.repo_url ? (
-        <a
+        <SiteLink
           href={project.repo_url}
           className="mi-link inline-flex items-center gap-1.5 text-base font-semibold text-accent-text"
         >
           {project.repo_label ?? "View code"}
-          <ExternalIcon />
-        </a>
+        </SiteLink>
       ) : null}
     </>
   );

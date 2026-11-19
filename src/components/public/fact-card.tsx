@@ -1,8 +1,7 @@
-import Link from "next/link";
 import { Doodle } from "@/components/motion/doodle";
 import { isExternalLink, paragraphs } from "@/lib/content/format";
 import type { AboutFact } from "@/lib/validation/content";
-import { ExternalIcon } from "./icons";
+import { SiteLink } from "./site-link";
 
 const SIZE: Record<AboutFact["size"], string> = {
   normal: "",
@@ -30,16 +29,16 @@ export function FactCard({ fact }: { fact: AboutFact }) {
         </p>
       ))}
       {fact.link_url && fact.link_label ? (
-        isExternalLink(fact.link_url) ? (
-          <a href={fact.link_url} className="mi-link inline-flex items-center gap-1.5 self-start text-[15px] font-bold text-accent-text">
-            {fact.link_label}
-            <ExternalIcon />
-          </a>
-        ) : (
-          <Link href={fact.link_url} className="mi-link self-start text-[15px] font-bold">
-            {fact.link_label}
-          </Link>
-        )
+        <SiteLink
+          href={fact.link_url}
+          className={
+            isExternalLink(fact.link_url)
+              ? "mi-link inline-flex items-center gap-1.5 self-start text-[15px] font-bold text-accent-text"
+              : "mi-link self-start text-[15px] font-bold"
+          }
+        >
+          {fact.link_label}
+        </SiteLink>
       ) : null}
     </li>
   );
