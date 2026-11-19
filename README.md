@@ -54,29 +54,41 @@ Built with Next.js 16 (App Router), React 19, TypeScript in strict mode, Tailwin
 
 ## Scripts
 
-| Script                 | What it does                                                                                |
-| ---------------------- | ------------------------------------------------------------------------------------------- |
-| `npm run dev`          | Starts the dev server                                                                       |
-| `npm run build`        | Builds for production; fails if an environment variable is missing or invalid               |
-| `npm run start`        | Serves the production build                                                                 |
-| `npm run lint`         | Runs ESLint                                                                                 |
-| `npm run format`       | Formats every file with Prettier                                                            |
-| `npm run format:check` | Checks formatting without changing files                                                    |
-| `npm run typecheck`    | Generates route types, then runs `tsc --noEmit`                                             |
-| `npm test`             | Runs the unit tests once with coverage (fails below 80% of lines in `src/lib`)              |
-| `npm run test:watch`   | Runs the unit tests in watch mode                                                           |
-| `npm run test:e2e`     | Runs Playwright with axe on desktop Chromium and mobile WebKit; needs `npm run build` first |
-| `npm run lighthouse`   | Runs Lighthouse CI against the production build; needs `npm run build` first                |
-| `npm run db:start`     | Starts local Supabase in Docker, applies migrations and loads the seed                      |
-| `npm run db:stop`      | Stops local Supabase (data is kept)                                                         |
-| `npm run db:reset`     | Recreates the local database from the migrations and the seed                               |
-| `npm run db:test`      | Runs the pgTAP database tests in `supabase/tests/` (needs `db:start`)                       |
+| Script                 | What it does                                                                                                                |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`          | Starts the dev server                                                                                                       |
+| `npm run build`        | Writes the case-study slug allowlist, then builds; needs `db:start`. Fails if an environment variable is missing or invalid |
+| `npm run start`        | Serves the production build                                                                                                 |
+| `npm run lint`         | Runs ESLint                                                                                                                 |
+| `npm run format`       | Formats every file with Prettier                                                                                            |
+| `npm run format:check` | Checks formatting without changing files                                                                                    |
+| `npm run typecheck`    | Generates route types, then runs `tsc --noEmit`                                                                             |
+| `npm test`             | Runs the unit tests once with coverage (fails below 80% of lines in `src/lib`)                                              |
+| `npm run test:watch`   | Runs the unit tests in watch mode                                                                                           |
+| `npm run test:e2e`     | Runs Playwright with axe on desktop Chromium and mobile WebKit; needs `npm run build` first                                 |
+| `npm run lighthouse`   | Runs Lighthouse CI on `/`, `/projects/aidready` and `/about`; needs a running `npm run start`                               |
+| `npm run db:start`     | Starts local Supabase in Docker, applies migrations and loads the seed                                                      |
+| `npm run db:stop`      | Stops local Supabase (data is kept)                                                                                         |
+| `npm run db:reset`     | Recreates the local database from the migrations and the seed                                                               |
+| `npm run db:test`      | Runs the pgTAP database tests in `supabase/tests/` (needs `db:start`)                                                       |
 
-WSL has no Chrome, so point Lighthouse at Playwright's Chromium when running it locally:
+Lighthouse audits a running server, as CI does. WSL has no Chrome, so point it at Playwright's Chromium:
 
 ```bash
+npm run build && npm run start &
+for path in / /projects/aidready /about; do curl -s -o /dev/null "http://localhost:3000$path"; done  # warm-up
 CHROME_PATH="$(node -e "console.log(require('playwright-core').chromium.executablePath())")" npm run lighthouse
 ```
+
+Scores on a busy laptop run lower than CI's; CI's `lighthouse` job is the gate.
+
+## Production data
+
+Favour runs these against the production Supabase project; see [technical design section 6](docs/technical-design.md) for the full steps.
+
+1. `npx supabase link --project-ref vkkygdflseadsodyqdbz`, then `npx supabase db push --include-seed` (once).
+2. Create the git-ignored `.env.production.local` with `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_SECRET_KEY`, then run `node scripts/upload-assets.mjs --dry-run` and `node scripts/upload-assets.mjs` to upload the resume and certificates. It never prints the key and is safe to re-run.
+3. Redeploy on Vercel so the pages pick up the data.
 
 ## Contributing
 

@@ -8,11 +8,20 @@ const fromRoot = (path: string) =>
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: {
-      "@": fromRoot("./src"),
+    // Array form: the more specific aliases must be matched before "@".
+    alias: [
+      // The real file is generated at build time and is absent in unit-test jobs.
+      {
+        find: "@/generated/project-slugs.json",
+        replacement: fromRoot("./tests/unit/stubs/project-slugs.json"),
+      },
+      { find: "@", replacement: fromRoot("./src") },
       // Next.js resolves "server-only" itself; outside Next it needs a stand-in.
-      "server-only": fromRoot("./tests/unit/stubs/server-only.ts"),
-    },
+      {
+        find: "server-only",
+        replacement: fromRoot("./tests/unit/stubs/server-only.ts"),
+      },
+    ],
   },
   test: {
     environment: "jsdom",

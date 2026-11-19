@@ -28,6 +28,16 @@ test.describe("keyboard-only navigation (desktop)", () => {
     expect(await focusedName(page)).toBe("Projects");
     await page.keyboard.press("Tab");
     expect(await focusedName(page)).toBe("About");
+    // Resume appears only when a resume is published.
+    if (
+      (await page
+        .getByRole("navigation", { name: "Main" })
+        .getByRole("link", { name: "Resume" })
+        .count()) > 0
+    ) {
+      await page.keyboard.press("Tab");
+      expect(await focusedName(page)).toBe("Resume");
+    }
     await page.keyboard.press("Tab");
     expect(await focusedName(page)).toBe("Open quick search, Ctrl K");
   });
@@ -58,8 +68,9 @@ test.describe("keyboard-only navigation (desktop)", () => {
       /Projects/,
     );
 
-    await page.keyboard.type("abo");
-    await expect(dialog.getByRole("option")).toHaveCount(1);
+    // The palette now holds real entries, so search for an exact page name.
+    await page.keyboard.type("about");
+    await expect(dialog.getByRole("option").first()).toHaveText(/^About/);
     await page.keyboard.press("Enter");
 
     await expect(page).toHaveURL(/\/about$/);

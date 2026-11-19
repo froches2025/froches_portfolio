@@ -31,7 +31,7 @@ export function SectionNav({ sections }: { sections: readonly Section[] }) {
   if (sections.length === 0) return null;
 
   return (
-    <nav aria-label="Sections" className="mt-6 hidden lg:block">
+    <nav aria-label="Sections" className="mt-6 hidden lg:block lg:short:mt-0">
       <ul>
         {sections.map((section) => {
           const active = section.id === activeId;

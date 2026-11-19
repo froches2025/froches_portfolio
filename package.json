@@ -21,7 +21,9 @@
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
-    "db:test": "supabase test db"
+    "db:test": "supabase test db",
+    "prebuild": "node scripts/write-project-slugs.mjs",
+    "predev": "node scripts/write-project-slugs.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
@@ -29,6 +31,7 @@
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "cmdk": "1.1.1",
+    "embla-carousel-react": "8.6.0",
     "lucide-react": "1.72.0",
     "motion": "14.13.0",
     "next": "16.4.6",
