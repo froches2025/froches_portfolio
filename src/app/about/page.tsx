@@ -39,7 +39,14 @@ export default async function AboutPage() {
 
   return (
     <div className="relative isolate">
-      <section className="mx-auto flex max-w-[1120px] flex-wrap items-end gap-14 px-5 pt-6 lg:px-10 lg:pt-14">
+      <section className="relative mx-auto flex max-w-[1120px] flex-wrap items-end gap-14 px-5 pt-6 lg:px-10 lg:pt-14">
+        {/* Decorative field behind the lower hero, reaching towards the
+            fact cards (design 14). Desktop only, as in design 07. */}
+        <ContourLines
+          fade="edges"
+          areaClassName="hidden lg:block left-[12%] right-[8%] top-[30%] -bottom-24"
+          className="-top-48 left-1/2 -translate-x-1/2"
+        />
         <div className="flex min-w-0 flex-[999_1_520px] flex-col gap-4 lg:gap-5 lg:pb-[72px]">
           <Entrance>
             <h1 className="text-5xl font-extrabold tracking-[-0.04em] lg:text-[80px] lg:leading-[0.95] lg:tracking-[-0.045em]">
@@ -82,15 +89,8 @@ export default async function AboutPage() {
         <PlaceholderFrame className="hidden h-[440px] max-w-[360px] flex-[1_1_300px] rounded-t-[24px] rounded-b-none border-b-0 lg:block" />
       </section>
 
-      <div
-        aria-hidden="true"
-        className="relative -mt-10 hidden h-[220px] lg:block"
-      >
-        <ContourLines className="-top-40 left-0 w-full" />
-      </div>
-
       <div className="mx-auto max-w-[1120px] px-5 pb-6 lg:px-10">
-        <section aria-labelledby="facts-heading" className="mt-12 lg:mt-6">
+        <section aria-labelledby="facts-heading" className="mt-12 lg:mt-14">
           <h2 id="facts-heading" className={`${h2} mb-4 lg:sr-only`}>
             A few things about me
           </h2>
