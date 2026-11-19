@@ -218,7 +218,7 @@ Next.js Cache Components render the pages at build time. Every query is a `'use 
 | Route | Does | Auth | FRs | Slice |
 | --- | --- | --- | --- | --- |
 | GET /resume | 307 to the current resume in the documents bucket, or 404 while none is uploaded (resume buttons are hidden then). Prerendered from the cached profile, so no database call per visit. Slice 2 adds a download count | Public | FR-4.1, 4.2, 9.2 | 1a |
-| GET /api/distance | Rounded distance from Kigali (nearest 10 km) from Vercel's `x-vercel-ip-latitude` and `x-vercel-ip-longitude` headers; `{ km: null }` without them. `Cache-Control: private, no-store`; stores and logs nothing. The card shows only its first sentence when km is null or under 50 | Public | FR-3.3 | 1a |
+| GET /api/distance | Rounded distance from Kigali (nearest 10 km) from Vercel's `x-vercel-ip-latitude` and `x-vercel-ip-longitude` headers; `{ km: null }` without them. `Cache-Control: private, no-store`; stores and logs nothing. The card has three states: far (50 km or more: distance and privacy line), near (under 50: "practically neighbours" and privacy line) and unknown (null: first sentence only). All three are stacked in one grid cell so the card never changes size | Public | FR-3.3 | 1a |
 | GET /auth/callback | Completes GitHub sign-in, then signs out and denies anyone who is not Favour | Public | FR-5.1 | 1b |
 | POST /api/events | Counts project link clicks sent with sendBeacon; rate-limited | Public | FR-9.2 | 2 |
 | GET /api/cron/keepalive | Runs a tiny query and purges old rate-limit rows. Called by GitHub Actions with a secret bearer token | CRON\_SECRET | NFR-4, NFR-5 | 1a (keep-alive), 2 (purge) |

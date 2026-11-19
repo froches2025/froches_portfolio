@@ -6,7 +6,7 @@ import {
   distanceKm,
   KIGALI,
   roundDistance,
-  shownDistance,
+  distanceState,
 } from "@/lib/geo/distance";
 
 const LAGOS = { latitude: 6.5244, longitude: 3.3792 };
@@ -26,12 +26,12 @@ describe("distance", () => {
     expect(roundDistance(3065)).toBe(3070);
   });
 
-  it("hides a distance under 50 km, and an unknown one", () => {
-    expect(shownDistance(null)).toBeNull();
-    expect(shownDistance(0)).toBeNull();
-    expect(shownDistance(40)).toBeNull();
-    expect(shownDistance(50)).toBe(50);
-    expect(shownDistance(3060)).toBe(3060);
+  it("names the far, near and unknown states around 50 km", () => {
+    expect(distanceState(null)).toEqual({ kind: "unknown" });
+    expect(distanceState(0)).toEqual({ kind: "near" });
+    expect(distanceState(40)).toEqual({ kind: "near" });
+    expect(distanceState(50)).toEqual({ kind: "far", km: 50 });
+    expect(distanceState(3060)).toEqual({ kind: "far", km: 3060 });
   });
 });
 

@@ -88,11 +88,22 @@ test("About shows the doodles and the distance card's fallback without location 
   page,
 }) => {
   await page.goto("/about");
-  await expect(page.locator("svg[data-doodle]")).toHaveCount(7);
+  // Seven fact-card doodles, plus the pin on the distance card's unknown state.
   await expect(
-    page.getByText("I am from Nigeria and live in Kigali, Rwanda."),
+    page.locator("svg[data-doodle]:not([data-doodle=pin])"),
+  ).toHaveCount(7);
+  const card = page.locator("li[data-state]");
+  await expect(card).toHaveAttribute("data-state", "unknown");
+  await expect(card.locator('svg[data-doodle="pin"]')).toBeVisible();
+  await expect(
+    page.getByText("I am from Nigeria and live in Kigali, Rwanda.", {
+      exact: true,
+    }),
   ).toBeVisible();
-  await expect(page.getByText(/Nothing is stored/)).toHaveCount(0);
+  // The other states stay in the DOM to hold the card's size, hidden.
+  for (const line of await page.getByText(/Nothing is stored/).all()) {
+    await expect(line).toBeHidden();
+  }
   await expect(page.getByRole("heading", { name: "Leadership" })).toBeVisible();
 });
 

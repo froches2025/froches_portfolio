@@ -40,9 +40,13 @@ export function distanceFromHeaders(headers: Headers): number | null {
 }
 
 // Under 50 km the visitor is in or near Kigali, and "about 10 km from you"
-// says too much about where they are, so the card shows only its first sentence.
+// says too much about where they are, so the card says "neighbours" instead.
 export const MIN_SHOWN_KM = 50;
 
-export function shownDistance(km: number | null): number | null {
-  return km !== null && km >= MIN_SHOWN_KM ? km : null;
+export type DistanceState =
+  { kind: "far"; km: number } | { kind: "near" } | { kind: "unknown" };
+
+export function distanceState(km: number | null): DistanceState {
+  if (km === null || !Number.isFinite(km)) return { kind: "unknown" };
+  return km >= MIN_SHOWN_KM ? { kind: "far", km } : { kind: "near" };
 }
