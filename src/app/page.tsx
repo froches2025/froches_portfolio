@@ -5,6 +5,7 @@ import { ExperienceList } from "@/components/public/experience-list";
 import { HomeLayout } from "@/components/public/home-layout";
 import { ProjectCard } from "@/components/public/project-card";
 import { SectionNav } from "@/components/public/section-nav";
+import { SiteLink } from "@/components/public/site-link";
 import { paragraphs } from "@/lib/content/format";
 import {
   getAbout,
@@ -48,7 +49,7 @@ export default async function HomePage() {
         </p>
       </Entrance>
       <Entrance order={1}>
-        <h1 className="text-[60px] leading-[0.92] font-extrabold tracking-[-0.04em] lg:text-[88px] lg:leading-[0.9] lg:tracking-[-0.045em]">
+        <h1 className="text-[60px] leading-[0.92] font-extrabold tracking-[-0.04em] lg:text-[88px] lg:leading-[0.9] lg:tracking-[-0.045em] lg:short:text-[68px]">
           Favour
           <br />
           Michael
@@ -69,7 +70,7 @@ export default async function HomePage() {
 
       <Entrance
         order={3}
-        className="mt-2 flex flex-col gap-3 lg:mt-4 lg:flex-row lg:flex-wrap"
+        className="mt-2 flex flex-col gap-3 lg:mt-4 lg:flex-row lg:flex-wrap lg:short:mt-1"
       >
         <Link href="/projects" className={`${primaryButton} lg:hidden`}>
           View projects
@@ -93,44 +94,31 @@ export default async function HomePage() {
         </a>
       </Entrance>
 
-      <ul className="mt-6 hidden flex-wrap gap-5 lg:flex">
-        {links.github ? (
-          <li>
-            <a
-              href={links.github}
-              className="mi-link text-[15px] font-semibold"
-            >
-              GitHub
-            </a>
-          </li>
-        ) : null}
-        {links.linkedin ? (
-          <li>
-            <a
-              href={links.linkedin}
-              className="mi-link text-[15px] font-semibold"
-            >
-              LinkedIn
-            </a>
-          </li>
-        ) : null}
-        {links.x ? (
-          <li>
-            <a href={links.x} className="mi-link text-[15px] font-semibold">
-              X
-            </a>
-          </li>
-        ) : null}
-        <li>
-          <a
-            href={`mailto:${profile.email}`}
-            className="mi-link text-[15px] font-semibold"
-          >
-            Email
-          </a>
-        </li>
+      <ul
+        data-home-socials=""
+        className="mt-6 hidden flex-wrap gap-5 lg:flex lg:short:mt-2"
+      >
+        {(
+          [
+            ["GitHub", links.github],
+            ["LinkedIn", links.linkedin],
+            ["X", links.x],
+            ["Email", `mailto:${profile.email}`],
+          ] as const
+        ).map(([label, href]) =>
+          href ? (
+            <li key={label}>
+              <SiteLink
+                href={href}
+                className="mi-link inline-flex items-center gap-1.5 text-[15px] font-semibold"
+              >
+                {label}
+              </SiteLink>
+            </li>
+          ) : null,
+        )}
       </ul>
-      <p className="mt-2 hidden text-sm text-muted lg:block">
+      <p className="mt-2 hidden text-sm text-muted lg:block lg:short:mt-0">
         Press Ctrl K to jump anywhere.
       </p>
     </>

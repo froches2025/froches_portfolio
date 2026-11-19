@@ -3,6 +3,11 @@
 @import "shadcn/tailwind.css";
 @import "../styles/motion.css";
 
+/* Short desktop windows: the sticky home column tightens so it fits the
+   viewport. At full size it is 894 px tall (measured at 1440 wide), so
+   anything shorter than 900 px uses the tight sizes (650 px). */
+@custom-variant short (@media (max-height: 899px));
+
 /*
  * Design tokens (docs/design, CLAUDE.md). The only place raw colours live.
  * The theme follows the device setting; there is no toggle in slice 1a.

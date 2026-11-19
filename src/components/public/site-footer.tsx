@@ -17,7 +17,9 @@ export function SiteFooter({ links = {} }: { links?: SocialLinks }) {
   return (
     <footer className="mx-auto flex w-full max-w-[1120px] flex-col gap-4 border-t border-line px-5 pt-8 pb-10 lg:px-10">
       {items.length > 0 ? (
-        <ul className="flex flex-wrap gap-5">
+        // Desktop home already lists these in its sticky column (design 13),
+        // so they show once there. CSS keeps the footer route-agnostic.
+        <ul className="flex flex-wrap gap-5 lg:[body:has([data-home-socials])_&]:hidden">
           {items.map((item) => (
             <li key={item.label}>
               <SiteLink
