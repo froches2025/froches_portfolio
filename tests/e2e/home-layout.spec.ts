@@ -32,6 +32,14 @@ for (const viewport of [
       viewport.height,
     );
 
+    // Section nav links meet the 44 px touch-target minimum (CLAUDE.md).
+    for (const link of await page
+      .getByRole("navigation", { name: "Sections" })
+      .getByRole("link")
+      .all()) {
+      expect((await link.boundingBox())!.height).toBeGreaterThanOrEqual(44);
+    }
+
     // Short windows drop the Ctrl K hint to make room; tall ones keep it.
     const hint = page.getByText("Press Ctrl K to jump anywhere.");
     if (viewport.height < 900) await expect(hint).toBeHidden();

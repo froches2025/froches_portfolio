@@ -41,7 +41,7 @@ export function SectionNav({ sections }: { sections: readonly Section[] }) {
                 href={`#${section.id}`}
                 aria-current={active ? "location" : undefined}
                 className={[
-                  "group flex items-center gap-3.5 py-2.5 text-[15px]",
+                  "group flex min-h-11 items-center gap-3.5 py-2.5 text-[15px]",
                   active ? "font-bold text-ink" : "font-medium text-muted",
                 ].join(" ")}
               >
