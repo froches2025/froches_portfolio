@@ -1,6 +1,6 @@
 -- The seed loaded completely and satisfies every rule above.
 begin;
-select plan(11);
+select plan(16);
 
 select is((select count(*)::integer from public.profile), 1, 'one profile row');
 select is((select full_name from public.profile), 'Favour Michael', 'profile name');
@@ -26,6 +26,21 @@ select results_eq(
   'seven fact cards carry doodles; hackathon is tall and cooking is wide'
 );
 select is((select count(*)::integer from public.about_facts), 11, 'eleven fact cards');
+
+select is((select headline from public.profile), 'Software engineer', 'headline in sentence case');
+select isnt((select pitch from public.profile), null, 'the hero pitch is seeded');
+select is((select count(*)::integer from public.projects where tagline is null), 0, 'every project has a tagline');
+select results_eq(
+  $$select slug, stack from public.projects where slug in ('aidready', 'froches-pepper-sauce') order by sort_order$$,
+  $$values ('aidready'::text, array['React', 'JavaScript', 'CSS', 'HAProxy']::text[]),
+           ('froches-pepper-sauce', array['React', 'JavaScript', 'CSS']::text[])$$,
+  'stacks list real technologies only'
+);
+select is(
+  (select array[role_md is not null, approach_md is not null, outcome_md is not null] from public.projects where slug = 'aidready'),
+  array[true, true, true],
+  'the AidReady case study has role, approach and outcome'
+);
 
 select * from finish();
 rollback;

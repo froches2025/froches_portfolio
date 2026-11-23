@@ -2,7 +2,19 @@ import { expect, test } from "@playwright/test";
 import { expectNoSeriousViolations, waitForHydration } from "./axe";
 
 const PAGES = [
-  { name: "home", path: "/", heading: "Favour Michael" },
+  { name: "home", path: "/", heading: /Favour\s*Michael/ },
+  { name: "projects", path: "/projects", heading: "Projects" },
+  {
+    name: "case-study-aidready",
+    path: "/projects/aidready",
+    heading: "AidReady",
+  },
+  {
+    name: "case-study-campusnav",
+    path: "/projects/campusnav",
+    heading: "CampusNav AI",
+  },
+  { name: "about", path: "/about", heading: /^(About|Hi, I am Favour\.)$/ },
   {
     name: "404",
     path: "/this-page-does-not-exist",
@@ -14,6 +26,9 @@ for (const colorScheme of ["light", "dark"] as const) {
   for (const reducedMotion of ["no-preference", "reduce"] as const) {
     test.describe(`${colorScheme} theme, motion ${reducedMotion}`, () => {
       test.use({ colorScheme, reducedMotion });
+      // axe on a long page takes about 2.6 s in WebKit alone and far longer on a
+      // loaded machine with parallel workers; 30 s timed out locally (17 Nov).
+      test.setTimeout(60_000);
 
       for (const { name, path, heading } of PAGES) {
         test(`${name} renders and has no serious accessibility violations`, async ({

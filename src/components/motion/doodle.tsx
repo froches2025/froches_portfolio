@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { DOODLES, type DoodleKind } from "./doodle-data";
+import { DOODLES, PIN_DOODLE, type DoodleKind } from "./doodle-data";
 
 // A floating fact-card doodle (FR-1.8). Bobs gently and speeds up while its
 // card is hovered or pressed; still under reduced motion and low-power mode.
@@ -7,10 +7,10 @@ export function Doodle({
   kind,
   className,
 }: {
-  kind: DoodleKind;
+  kind: DoodleKind | "pin";
   className?: string;
 }) {
-  const { tilt, shapes } = DOODLES[kind];
+  const { tilt, shapes } = kind === "pin" ? PIN_DOODLE : DOODLES[kind];
   return (
     <svg
       aria-hidden="true"

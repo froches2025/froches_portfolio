@@ -1,7 +1,11 @@
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { Doodle } from "@/components/motion/doodle";
-import { DOODLES, type DoodleKind } from "@/components/motion/doodle-data";
+import {
+  DOODLES,
+  PIN_DOODLE,
+  type DoodleKind,
+} from "@/components/motion/doodle-data";
 
 const KINDS = Object.keys(DOODLES) as DoodleKind[];
 
@@ -33,4 +37,12 @@ describe("Doodle", () => {
       expect(svg.children).toHaveLength(DOODLES[kind].shapes.length);
     },
   );
+
+  it("draws the distance card's pin, which fact cards cannot pick", () => {
+    const { container } = render(<Doodle kind="pin" />);
+    const svg = container.querySelector("svg")!;
+    expect(svg.getAttribute("aria-hidden")).toBe("true");
+    expect(svg.children).toHaveLength(PIN_DOODLE.shapes.length);
+    expect(KINDS).not.toContain("pin");
+  });
 });

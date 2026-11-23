@@ -1,29 +1,34 @@
 import { expect, test } from "@playwright/test";
 
-// FR-1.4: going back restores the scroll position.
+// FR-1.4: going back from a case study returns to the same place on home.
 
 test("nothing turns off the browser's scroll restoration", async ({ page }) => {
   await page.goto("/");
   expect(await page.evaluate(() => history.scrollRestoration)).toBe("auto");
 });
 
-// Needs two real pages. In step 3 every route except / is a 404, and Next.js
-// loads a 404 with a full document request (its client fetch gets a 404 and
-// falls back), so going back reloads the page and nothing injected to make it
-// tall survives. Traced on 16 Nov: `document GET /projects -> 404`, then
-// `document GET /this-page-does-not-exist` on back. Step 4 replaces this with
-// home -> case study -> back on real content.
-test.fixme("going back from a case study restores the home scroll position", async ({
+test("going back from a case study restores the home scroll position", async ({
   page,
 }) => {
   await page.goto("/");
-  await page.evaluate(() => window.scrollTo(0, 1500));
-  await page
-    .getByRole("link", { name: /case study/i })
-    .first()
-    .click();
+  const card = page.getByRole("link", {
+    name: "Read case study: CampusNav AI",
+  });
+  await card.scrollIntoViewIfNeeded();
+  const before = await page.evaluate(() => window.scrollY);
+  expect(before).toBeGreaterThan(300);
+
+  await card.click();
+  await expect(page).toHaveURL(/\/projects\/campusnav$/);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "CampusNav AI" }),
+  ).toBeVisible();
+
   await page.goBack();
+  await expect(page).toHaveURL(/\/$/);
   await expect
-    .poll(() => page.evaluate(() => Math.abs(window.scrollY - 1500)))
+    .poll(() =>
+      page.evaluate((target) => Math.abs(window.scrollY - target), before),
+    )
     .toBeLessThanOrEqual(2);
 });

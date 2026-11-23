@@ -1,12 +1,12 @@
 -- Database rules from technical-design section 2 reject bad data, even when
 -- written by the table owner (RLS aside). Runs against the seeded data.
 begin;
-select plan(43);
+select plan(50);
 
 -- Featured: at most 4 (FR-1.2). The seed features all 4 projects.
 select throws_ok(
-  $$insert into public.projects (slug, title, one_liner, year, status, sort_order, is_featured, featured_order)
-    values ('fifth', 'Fifth', 'Fifth.', 2026, 'live', 100, true, 4)$$,
+  $$insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order, is_featured, featured_order)
+    values ('fifth', 'Fifth', 'Tagline.', 'Fifth.', 2026, 'live', 100, true, 4)$$,
   '23514', 'At most 4 projects can be featured',
   'a 5th featured project is rejected'
 );
@@ -46,45 +46,45 @@ set constraints all deferred;
 
 -- projects
 select throws_ok(
-  $$insert into public.projects (slug, title, one_liner, year, status, sort_order) values ('Bad Slug', 'T', 'O', 2026, 'live', 100)$$,
+  $$insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order) values ('Bad Slug', 'T', 'Tagline.', 'O', 2026, 'live', 100)$$,
   '23514', null, 'a slug with capitals or spaces is rejected'
 );
 select throws_ok(
-  $$insert into public.projects (slug, title, one_liner, year, status, sort_order) values ('trailing-', 'T', 'O', 2026, 'live', 100)$$,
+  $$insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order) values ('trailing-', 'T', 'Tagline.', 'O', 2026, 'live', 100)$$,
   '23514', null, 'a slug ending in a hyphen is rejected'
 );
 select throws_ok(
-  $$insert into public.projects (slug, title, one_liner, year, status, sort_order) values ('old', 'T', 'O', 2014, 'live', 100)$$,
+  $$insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order) values ('old', 'T', 'Tagline.', 'O', 2014, 'live', 100)$$,
   '23514', null, 'a year before 2015 is rejected'
 );
 select throws_ok(
-  $$insert into public.projects (slug, title, one_liner, year, status, sort_order) values ('state', 'T', 'O', 2026, 'paused', 100)$$,
+  $$insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order) values ('state', 'T', 'Tagline.', 'O', 2026, 'paused', 100)$$,
   '23514', null, 'an unknown status is rejected'
 );
 select throws_ok(
-  $$insert into public.projects (slug, title, one_liner, year, status, sort_order, live_url) values ('insecure', 'T', 'O', 2026, 'live', 100, 'http://example.com')$$,
+  $$insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order, live_url) values ('insecure', 'T', 'Tagline.', 'O', 2026, 'live', 100, 'http://example.com')$$,
   '23514', null, 'an http live_url is rejected'
 );
 select throws_ok(
-  format($$insert into public.projects (slug, title, one_liner, year, status, sort_order) values ('long', 'T', %L, 2026, 'live', 100)$$, repeat('a', 201)),
+  format($$insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order) values ('long', 'T', 'Tagline.', %L, 2026, 'live', 100)$$, repeat('a', 201)),
   '23514', null, 'a one_liner of 201 characters is rejected'
 );
 select lives_ok(
-  format($$insert into public.projects (slug, title, one_liner, year, status, sort_order) values ('long-ok', 'T', %L, 2026, 'live', 101)$$, repeat('a', 200)),
+  format($$insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order) values ('long-ok', 'T', 'Tagline.', %L, 2026, 'live', 101)$$, repeat('a', 200)),
   'a one_liner of 200 characters is accepted'
 );
 select throws_ok(
-  $$insert into public.projects (slug, title, one_liner, year, status, sort_order, stack)
-    values ('stack', 'T', 'O', 2026, 'live', 102, array['1','2','3','4','5','6','7','8','9','10','11','12','13'])$$,
+  $$insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order, stack)
+    values ('stack', 'T', 'Tagline.', 'O', 2026, 'live', 102, array['1','2','3','4','5','6','7','8','9','10','11','12','13'])$$,
   '23514', null, '13 stack tags are rejected'
 );
 select throws_ok(
-  format($$insert into public.projects (slug, title, one_liner, year, status, sort_order, stack) values ('tag', 'T', 'O', 2026, 'live', 102, array[%L])$$, repeat('a', 31)),
+  format($$insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order, stack) values ('tag', 'T', 'Tagline.', 'O', 2026, 'live', 102, array[%L])$$, repeat('a', 31)),
   '23514', null, 'a stack tag of 31 characters is rejected'
 );
 
 -- published_at is set on first publish and kept afterwards.
-insert into public.projects (slug, title, one_liner, year, status, sort_order) values ('pub', 'T', 'O', 2026, 'live', 103);
+insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order) values ('pub', 'T', 'Tagline.', 'O', 2026, 'live', 103);
 select is((select published_at from public.projects where slug = 'pub'), null, 'a draft has no published_at');
 update public.projects set is_published = true, published_at = null where slug = 'pub';
 select isnt((select published_at from public.projects where slug = 'pub'), null, 'publishing sets published_at');
@@ -119,11 +119,11 @@ select is_empty($$select 1 from public.project_images where storage_path = 'casc
 
 -- profile
 select throws_ok(
-  $$insert into public.profile (full_name, headline, bio_md, email) values ('X', 'X', 'X', 'x@example.test')$$,
+  $$insert into public.profile (full_name, headline, pitch, bio_md, email) values ('X', 'X', 'X', 'X', 'x@example.test')$$,
   '23505', null, 'a second profile row is rejected'
 );
 select throws_ok(
-  $$insert into public.profile (singleton, full_name, headline, bio_md, email) values (false, 'X', 'X', 'X', 'x@example.test')$$,
+  $$insert into public.profile (singleton, full_name, headline, pitch, bio_md, email) values (false, 'X', 'X', 'X', 'X', 'x@example.test')$$,
   '23514', null, 'profile.singleton cannot be false'
 );
 select throws_ok($$update public.profile set email = 'not-an-email'$$, '23514', null, 'an invalid email is rejected');
@@ -189,6 +189,36 @@ select throws_ok(
 select throws_ok(
   format($$insert into public.about_facts (title, body_md, sort_order) values ('T', %L, 102)$$, repeat('a', 601)),
   '23514', null, 'a body of 601 characters is rejected'
+);
+
+-- Page copy columns (migration 20261117000001).
+select throws_ok(
+  $$insert into public.projects (slug, title, one_liner, year, status, sort_order) values ('no-tagline', 'T', 'O', 2026, 'live', 104)$$,
+  '23502', null, 'a project without a tagline is rejected'
+);
+select throws_ok(
+  format($$insert into public.projects (slug, title, tagline, one_liner, year, status, sort_order) values ('long-tag', 'T', %L, 'O', 2026, 'live', 104)$$, repeat('a', 81)),
+  '23514', null, 'a tagline of 81 characters is rejected'
+);
+select throws_ok(
+  format($$update public.projects set highlight = %L where slug = 'aidready'$$, repeat('a', 121)),
+  '23514', null, 'a highlight of 121 characters is rejected'
+);
+select throws_ok(
+  format($$update public.projects set live_label = %L where slug = 'aidready'$$, repeat('a', 41)),
+  '23514', null, 'a live_label of 41 characters is rejected'
+);
+select throws_ok(
+  $$update public.projects set built_at = '' where slug = 'aidready'$$,
+  '23514', null, 'an empty built_at is rejected (use null instead)'
+);
+select throws_ok(
+  $$update public.profile set pitch = null$$,
+  '23502', null, 'the profile pitch is required'
+);
+select throws_ok(
+  format($$update public.profile set availability = %L$$, repeat('a', 161)),
+  '23514', null, 'an availability line of 161 characters is rejected'
 );
 
 select * from finish();

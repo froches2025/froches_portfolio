@@ -92,3 +92,17 @@ export const DOODLES = {
 } as const satisfies Record<string, { tilt: number; shapes: readonly Shape[] }>;
 
 export type DoodleKind = keyof typeof DOODLES;
+
+// A map pin for the distance card only (FR-3.3). Kept out of DOODLES because
+// that list is the set fact cards may pick, mirrored by the database check.
+export const PIN_DOODLE = {
+  tilt: 6,
+  shapes: [
+    {
+      tag: "path",
+      d: "M28 47s-13-12-13-23a13 13 0 0 1 26 0c0 11-13 23-13 23z",
+    },
+    { tag: "circle", cx: 28, cy: 24, r: 5 },
+    { tag: "path", d: "M9 51h7M24 51h8M40 51h7" },
+  ],
+} as const satisfies { tilt: number; shapes: readonly Shape[] };

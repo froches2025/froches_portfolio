@@ -52,3 +52,6 @@ next-env.d.ts
 
 # Chrome profiles that Lighthouse creates in the working directory when run under WSL
 /C:*
+
+# Generated before each build by scripts/write-project-slugs.mjs
+/src/generated/

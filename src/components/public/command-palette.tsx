@@ -7,12 +7,10 @@ import { Dialog } from "radix-ui";
 import { CloseIcon } from "./icons";
 import { usePalette } from "./palette-provider";
 
-export type PaletteItem = {
-  label: string;
-  kind: "Page" | "Project" | "Action" | "Link";
-  href: string;
-  keywords?: readonly string[];
-};
+import { isExternalLink } from "@/lib/content/format";
+import type { PaletteItem } from "@/lib/content/site";
+
+export type { PaletteItem };
 
 // Announces how many results match, so screen-reader users hear the effect of typing.
 function ResultCount() {
@@ -36,6 +34,9 @@ export function CommandPalette({ items }: { items: readonly PaletteItem[] }) {
     setOpen(false);
     if (item.href.startsWith("/")) {
       router.push(item.href);
+    } else if (isExternalLink(item.href)) {
+      // Same rule as SiteLink: other sites open in a new tab.
+      window.open(item.href, "_blank", "noopener,noreferrer");
     } else {
       window.location.assign(item.href);
     }

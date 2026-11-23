@@ -22,3 +22,6 @@ docs/content/
 # Written by `next dev` and by Favour; not reformatted by tooling
 AGENTS.md
 CLAUDE.md
+
+# Supabase CLI state (linked project ref), local only
+supabase/.temp/

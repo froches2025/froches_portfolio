@@ -1,10 +1,12 @@
 {
   "ci": {
     "collect": {
-      "url": ["http://localhost:3000/"],
-      "startServerCommand": "npm run start",
-      "startServerReadyPattern": "Ready",
-      "numberOfRuns": 3
+      "url": [
+        "http://localhost:3000/",
+        "http://localhost:3000/projects/aidready",
+        "http://localhost:3000/about"
+      ],
+      "numberOfRuns": 5
     },
     "assert": {
       "assertions": {
