@@ -42,8 +42,8 @@ Slice 1 is split so the new site can launch by 15 Nov: slice 1a replaces the liv
 | Slice | Contents | Ships when |
 | --- | --- | --- |
 | 0. Hotfix (done outside this PRD) | Current site content synced to the resume, resume PDF, froches.tech domain | 12 Nov 2026 |
-| 1a. Public v2 | New design. Home, projects list, case study pages with image slideshow, About, resume download, command palette. Supabase schema with row-level security, seeded from the resume. CI, tests, docs. v2 replaces the live site and portfolio.froches.tech redirects to froches.tech. | Sun 15 Nov 2026 |
-| 1b. Admin | GitHub sign-in locked to Favour, projects with draft and published, image upload, featured order by hand, resume upload, and editing of profile, About, experience, education, roles and skills. Until it ships, content changes go through reviewed Claude Code PRs. | About 22 Nov 2026 (proposed) |
+| 1a. Public v2 | New design. Home, projects list, case study pages with image slideshow, About, resume download, command palette. Supabase schema with row-level security, seeded from the resume. CI, tests, docs. v2 replaces the live site and portfolio.froches.tech redirects to froches.tech. | Mon 23 Nov 2026 |
+| 1b. Admin | GitHub sign-in locked to Favour, projects with draft and published, image upload, featured order by hand, resume upload, and editing of profile, About, experience, education, roles and skills. Until it ships, content changes go through reviewed Claude Code PRs. | From Mon 30 Nov 2026 |
 | 2. Engage | Contact form with admin inbox, email to Favour and auto-reply. Guestbook with bot check, approval queue and email alert. First-party counts (resume downloads, contact sends, guestbook posts, project link clicks) in the admin panel. Vercel Speed Insights. | After slice 1b |
 | 3. Delight | Playful details such as a small pop-out easter egg, per-project share images, motion polish. Optional WebGL hero only if it passes the performance budget. | Agile sprints after slice 2 |
 
@@ -158,7 +158,7 @@ Fifty requirements in 11 groups. Every commit and PR cites the FR numbers it tou
 | --- | --- | --- |
 | FR-10.1 | Every public page has a title, description and canonical URL on froches.tech. | 1 |
 | FR-10.2 | Sitemap lists published pages only; robots blocks /admin. | 1 |
-| FR-10.3 | Every page has a share image; each project gets its own. | 1 (site), 3 (per project) |
+| FR-10.3 | Every page has a share image; each project gets its own. | 1a (site and per project; moved from slice 3 on 23 Nov) |
 
 ### FR-11 Domains
 
@@ -237,7 +237,7 @@ Rules that cut across tables:
 
 ## 7. Delivery plan
 
-Four design phases each end at Favour's approval. Then slice 1 is built in nine reviewed steps on the v2 branch, and v2 replaces the live site only when the launch checklist is green. Schedule (agreed 12 Nov): technical and visual design on Fri 13 Nov, handoff and steps 1 to 3 on Sat 14 Nov, steps 4 to 6 and the 1a launch on Sun 15 Nov. Slice 1b follows around 22 Nov (proposed).
+Four design phases each end at Favour's approval. Then slice 1 is built in nine reviewed steps on the v2 branch, and v2 replaces the live site only when the launch checklist is green. Schedule (agreed 12 Nov): technical and visual design on Fri 13 Nov, handoff and steps 1 to 3 on Sat 14 Nov, steps 4 to 6 and the 1a launch on Sun 15 Nov. Slice 1b follows around 22 Nov (proposed). Moved on 23 Nov 2026: the 1a launch is Mon 23 Nov 2026 and slice 1b starts Mon 30 Nov 2026.
 
 &#91;embedded content: Delivery roadmap · 4 gated phases, 4 build stages, not to scale\]
 
@@ -280,6 +280,9 @@ The biggest risk is the domain: everything Favour has deployed sits under froche
 - [x] Guestbook alert email links to the approval queue (sign-in required).
 - [x] Cloudflare Turnstile is the bot check.
 - [x] Launch: slice 1 split; public v2 (1a) by Sun 15 Nov 2026, admin (1b) around 22 Nov.
+- [x] Dates moved (23 Nov 2026): slice 1a launches Mon 23 Nov 2026; slice 1b starts Mon 30 Nov 2026.
+- [x] A share image per case study ships in slice 1a, not slice 3 (23 Nov 2026).
+- [x] The www and portfolio.froches.tech redirects are Vercel domain settings (308, path kept), not code (23 Nov 2026).
 - [x] Domain renewal reminder scheduled for 1 June 2027.
 - [x] GitHub sign-in uses email device codes today; two-factor authentication to be turned on before launch.
 - [x] X (x.com/froches\_) is included in social links.

@@ -207,11 +207,20 @@ Next.js Cache Components render the pages at build time. Every query is a `'use 
 | --- | --- | --- | --- |
 | / | profile, projects | FR-1.1, 1.2, 1.3, 1.5, 9.1, 10.1 | 1a |
 | /projects | projects | FR-2.1 | 1a |
-| /projects/\[slug\] | projects, project:\[slug\] | FR-2.3 to 2.6. Every published slug is prerendered (`generateStaticParams`, `ensureStatic = "navigation"`). Unknown and draft slugs never reach the page: `src/proxy.ts` (matcher `/projects/:slug` only) checks a build-time allowlist and rewrites them to the prerendered 404 with status 404, so they cause no database call even when Supabase is paused. The allowlist is `src/generated/project-slugs.json`, written before each build by `scripts/write-project-slugs.mjs` (git-ignored; the build fails if the query fails or returns no slugs) | 1a |
+| /projects/\[slug\] | projects, project:\[slug\] | FR-2.3 to 2.6. Every published slug is prerendered (`generateStaticParams`, `ensureStatic = "navigation"`). Unknown and draft slugs never reach the page: `src/proxy.ts` (matchers `/projects/:slug` and `/projects/:slug/:rest*`, so the share image under a case study is covered too) checks a build-time allowlist and rewrites them to the prerendered 404 with status 404, so they cause no database call even when Supabase is paused. The allowlist is `src/generated/project-slugs.json`, written before each build by `scripts/write-project-slugs.mjs` (git-ignored; the build fails if the query fails or returns no slugs) | 1a |
 | /about | profile, about | FR-3.1 to 3.4. Phone and desktop show the same 11 fact cards, the distance card and Leadership (PRD over designs 07 and 14, confirmed 17 Nov) | 1a |
-| /privacy | none (static) | NFR-6 | 1a |
-| /sitemap.xml, /robots.txt, /opengraph-image | projects | FR-10.1 to 10.3 | 1a |
+| /privacy | profile (for the contact email) | NFR-6. Linked from the footer and listed in the sitemap. The copy states only what the code does (approved 23 Nov). Any change to what the site collects, starting with slice 2's contact form, guestbook and counts, updates this page in the same PR | 1a |
+| /sitemap.xml | projects | FR-10.2. `/`, `/projects`, `/about`, `/privacy` and each published case study, as absolute URLs on `NEXT_PUBLIC_SITE_URL` | 1a |
+| /robots.txt | none (static) | FR-10.2. Allows `/`, disallows `/admin`, names the sitemap. The same on every deployment; previews are kept out of search by their header (below) | 1a |
+| /opengraph-image | profile | FR-10.3. The site share image, 1200x630 PNG drawn with `next/og` in the Contour lines style (`src/lib/og/render.tsx`, Schibsted Grotesk TTFs committed under `src/lib/og/fonts/` with their OFL licence). Used by every page without its own | 1a |
+| /projects/\[slug\]/share.png | projects, project:\[slug\] | FR-10.3. One share image per published case study, prerendered per slug (`generateStaticParams`). A route handler rather than an `opengraph-image` file: per-image alt text there needs `generateImageMetadata`, whose extra id segment stopped the build prerendering the images (checked 23 Nov). The page names the image and its alt in `generateMetadata`. Unknown slugs get the proxy's 404 | 1a |
 | /guestbook | guestbook | FR-8.5 | 2 |
+
+Metadata (FR-10.1): the root layout sets the title template "%s · Favour Michael" and `metadataBase` from `NEXT_PUBLIC_SITE_URL`. Every page builds its title, description, canonical, Open Graph and Twitter card with `pageMetadata()` (`src/lib/seo/metadata.ts`). It always names the share image, because a page that sets `openGraph` does not inherit the root image file. Home carries a schema.org Person in JSON-LD, built only from the profile row (`src/lib/seo/person.ts`).
+
+Only production is indexed: when Vercel builds a preview or development deployment (`VERCEL_ENV` is `preview` or `development`), `next.config.ts` sends `X-Robots-Tag: noindex, nofollow` on every path (`src/lib/seo/indexing.ts`). Production, local and CI builds send no robots header; CI's Lighthouse SEO audit would fail on noindex.
+
+`scripts/check-prerendered.mjs` runs after every CI build. It fails unless the prerender manifest lists every public page, the sitemap, robots, the site share image, and each published case study with its share image.
 
 ### Route handlers
 
@@ -225,10 +234,11 @@ Next.js Cache Components render the pages at build time. Every query is a `'use 
 
 ### Redirects (next.config)
 
+Host redirects (www and portfolio.froches.tech) are Vercel domain settings, not code; see section 6, Domains.
+
 | From | To | Type |
 | --- | --- | --- |
 | /resume-favour-michael.pdf | /resume | Permanent, keeps the v1 link alive (FR-4.2). The PDF moved out of `public/` to `docs/content/resume/`, so the redirect always applies |
-| Any path on portfolio.froches.tech | Same path on froches.tech | Permanent, set as a Vercel domain redirect (FR-11.2) |
 
 ### Admin pages (dynamic, never cached, noindex)
 
@@ -323,6 +333,16 @@ There is one production Supabase project and no cloud dev project. It runs in Ea
 | Preview | Vercel preview deployment for each PR | Production project, read through RLS (public data only) | Off (ADMIN\_ENABLED=false), so a preview can never write to production |
 | Production | main, served at froches.tech | Production project | On |
 
+### Domains (Vercel, set at launch)
+
+| Domain | Setting |
+| --- | --- |
+| froches.tech | Primary domain, assigned to Production (the main branch) (FR-11.1) |
+| www.froches.tech | Redirects to froches.tech: 308, path kept |
+| portfolio.froches.tech | Redirects to froches.tech: 308, path kept, so links already sent keep working (FR-11.2) |
+
+These redirects live in Vercel's domain settings, not in next.config (decided 23 Nov), so they apply before the app runs. Checked after launch with `curl -sI https://portfolio.froches.tech/about` and `curl -sI https://www.froches.tech/about`, which must both return 308 with `Location: https://froches.tech/about`.
+
 ### Sign-in flow (slice 1b)
 
 1. Favour taps Sign in with GitHub on /admin/sign-in. Supabase Auth runs the GitHub OAuth flow with PKCE.
@@ -338,7 +358,8 @@ Validated at build and start by `src/lib/env.ts`. `NEXT_PUBLIC_SUPABASE_PUBLISHA
 
 | Name | Secret | Used by | Purpose | Slice |
 | --- | --- | --- | --- | --- |
-| NEXT\_PUBLIC\_SITE\_URL | No | App | Canonical URL: https://froches.tech in production | 1a |
+| NEXT\_PUBLIC\_SITE\_URL | No | App | Base for canonicals, share-image URLs, the sitemap and JSON-LD: https://froches.tech for Production (set at launch); previews use their own URL and are noindex | 1a |
+| VERCEL\_ENV | No | next.config.ts | Set by Vercel on every deployment (`production`, `preview` or `development`); absent locally and in CI. Preview and development builds send noindex. Validated as optional | 1a |
 | NEXT\_PUBLIC\_SUPABASE\_URL | No | App | Supabase project URL | 1a |
 | NEXT\_PUBLIC\_SUPABASE\_PUBLISHABLE\_KEY | No | App | Public key; RLS limits it to published data | 1a |
 | CRON\_SECRET | Yes | Keep-alive route, GitHub Actions | Bearer token for /api/cron/keepalive, at least 32 characters. Server-only: read through `src/lib/server-env.ts`, validated at build by next.config.ts | 1a |
@@ -379,10 +400,10 @@ Every PR to v2 or main must pass five gates: code checks, unit and component tes
 
 | Layer | Tool | Covers | Slice |
 | --- | --- | --- | --- |
-| Unit | Vitest | zod schemas, slug and ordering helpers, env validation, Kigali date formatting, redirect map, motion-preference logic | 1a |
+| Unit | Vitest | zod schemas, slug and ordering helpers, env validation, Kigali date formatting, redirect map, motion-preference logic; page metadata, Person JSON-LD (escaping), the noindex rule for each `VERCEL_ENV`, robots and sitemap output, the proxy on share-image paths | 1a |
 | Component | Vitest, Testing Library, jsdom | Slideshow (arrow keys, buttons, swipe, alt text), nav section highlight, command palette, hidden empty case-study sections, project card states | 1a |
 | Database | Supabase CLI with pgTAP (bundled with the CLI) | RLS on every table found at run time; visitors cannot read drafts or write anything; a signed-in non-admin cannot write; admin can; at most 4 featured; check constraints | 1a, extended in 1b and 2 |
-| End-to-end | Playwright, desktop Chromium and a mobile WebKit profile | Home to case study and back keeps scroll position; resume and old resume URL redirect; draft slug gives 404; command palette; full run with reduce-motion on | 1a |
+| End-to-end | Playwright, desktop Chromium and a mobile WebKit profile | Home to case study and back keeps scroll position; resume and old resume URL redirect; draft slug gives 404; command palette; full run with reduce-motion on; SEO (`tests/e2e/seo.spec.ts`): on every public page the title, description, canonical, one Open Graph image that returns a PNG, a matching Twitter card, home JSON-LD, robots.txt and sitemap.xml contents, no `X-Robots-Tag` on a non-Vercel build, an unknown slug's share image is 404, and the footer's privacy link | 1a |
 | Accessibility | @axe-core/playwright on every public page | No serious or critical violations | 1a |
 | Performance | Lighthouse CI, mobile preset, on /, /projects and one case study | Performance 90+, accessibility, best practices and SEO 100 | 1a |
 | Admin journeys | Playwright with a seeded test admin (local and CI only) | Sign-in gate, denied non-admin, create draft, preview, publish, page refreshes, reorder, image alt required, resume upload | 1b |
@@ -401,8 +422,8 @@ Runs on pull requests to v2 and main and on pushes to them. Each job is named af
 | `typecheck` |  | `next typegen`, then `tsc --noEmit` |
 | `commitlint` |  | Pull requests only: every commit in the PR, then the PR title. The title becomes the commit on v2 and main because PRs are squash-merged. It is passed to commitlint through an environment variable, never inlined in the script, so a crafted title cannot inject shell commands |
 | `unit` |  | Vitest unit and component tests with coverage; fails below 80% of lines in src/lib |
-| `build` |  | Starts local Supabase (Postgres, Auth, Storage, Kong, PostgREST), uses its publishable key, then `npm run build`: the prebuild writes the slug allowlist and the pages prerender from the seeded database. Uploads `.next/` (without its cache) as an artifact; `include-hidden-files` is set because upload-artifact skips hidden folders by default |
-| `e2e` | `build` | Downloads the build into `.next/`, then Playwright with axe on desktop Chromium and mobile WebKit, on every page in light and dark, with and without reduced motion. There is no database in this job, so the unknown-slug tests prove those 404s make no query |
+| `build` |  | Starts local Supabase (Postgres, Auth, Storage, Kong, PostgREST), uses its publishable key, then `npm run build`: the prebuild writes the slug allowlist and the pages prerender from the seeded database. Then `scripts/check-prerendered.mjs` fails the job unless every public page, the sitemap, robots and every share image (one per published slug) was prerendered. Uploads `.next/` (without its cache) as an artifact; `include-hidden-files` is set because upload-artifact skips hidden folders by default |
+| `e2e` | `build` | Downloads the build into `.next/`, then Playwright with axe on desktop Chromium and mobile WebKit, on every page in light and dark, with and without reduced motion. There is no database in this job, so the unknown-slug tests prove those 404s make no query, and the SEO tests prove every page and share image is served from build output |
 | `lighthouse` | `build` | Downloads the build into `.next/`, starts `next start`, sends one warm-up request to each audited URL, then Lighthouse CI on `/`, `/projects/aidready` and `/about`, mobile preset, 5 runs each (with 3, two slow runner warm-ups could sink the median; see PR #6). Performance 90+ on the median run (`median-run`); accessibility, best practices and SEO 100 on every run (`pessimistic`, the worst run). Each run's scores go to the job log and summary, and the reports are uploaded on every run |
 | `database` |  | `supabase start` with only Postgres, Auth and Storage (their schemas are under test): applies every migration and loads the seed, then `supabase test db` runs the pgTAP files in `supabase/tests/` |
 
