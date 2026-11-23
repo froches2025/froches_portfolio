@@ -11,6 +11,7 @@ import {
   getPublishedProjects,
 } from "@/lib/content/queries";
 import { publicStorageUrl } from "@/lib/content/storage";
+import { pageMetadata } from "@/lib/seo/metadata";
 import type { Project } from "@/lib/validation/content";
 
 // The complete page must come from static output. For a slug that was not
@@ -42,11 +43,15 @@ export async function generateMetadata({
   if (!slugs.includes(slug)) return {};
   const project = await getProjectBySlug(slug);
   if (!project) return {};
-  return {
-    title: `${project.title} · Favour Michael`,
+  return pageMetadata({
+    title: project.title,
     description: project.one_liner,
-    alternates: { canonical: `/projects/${project.slug}` },
-  };
+    path: `/projects/${project.slug}`,
+    image: {
+      url: `/projects/${project.slug}/share.png`,
+      alt: `${project.title}: case study by Favour Michael`,
+    },
+  });
 }
 
 const SECTIONS = [

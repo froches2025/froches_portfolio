@@ -10,7 +10,7 @@ Favour Michael's portfolio at froches.tech (portfolio.froches.tech redirects the
 - Never invent requirements, content, metrics, dates or copy. All site content comes from Favour's resume or from her directly. If something is missing or two docs disagree: stop and ask Favour.
 - Any change to behaviour updates the docs in the same PR.
 
-## Current phase: slice 1a (public v2), launch target Sun 15 Nov 2026
+## Current phase: slice 1a (public v2), launch Mon 23 Nov 2026; slice 1b from Mon 30 Nov 2026
 
 Steps, one branch and one PR each, all branched from `v2`:
 
@@ -21,7 +21,7 @@ Steps, one branch and one PR each, all branched from `v2`:
 5. SEO, share image, sitemap, redirects, Lighthouse and accessibility gates.
 6. Launch: merge v2 into main, domains, smoke test.
 
-Out of scope until Favour says otherwise: admin panel and sign-in (slice 1b), contact form, guestbook, first-party counts, Speed Insights (slice 2), per-project share images, WebGL (slice 3), blog, sound, visitor accounts, AI chat, translations, selling services.
+Out of scope until Favour says otherwise: admin panel and sign-in (slice 1b), contact form, guestbook, first-party counts, Speed Insights (slice 2), WebGL (slice 3), blog, sound, visitor accounts, AI chat, translations, selling services.
 
 ## Stack (exact versions, no ^ or ~)
 

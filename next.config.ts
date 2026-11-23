@@ -3,8 +3,9 @@ import type { NextConfig } from "next";
 // A missing or malformed variable fails `next build`: importing env.ts checks
 // the public variables, and parseServerEnv checks the server-only secrets.
 import { env, parseServerEnv } from "./src/lib/env";
+import { robotsHeaders } from "./src/lib/seo/indexing";
 
-parseServerEnv(process.env);
+const serverEnv = parseServerEnv(process.env);
 
 // Only our own Supabase Storage public files may go through next/image.
 const storagePattern = new URL(
@@ -18,6 +19,10 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   images: {
     remotePatterns: [storagePattern],
+  },
+  // Previews send noindex so only production is indexed (FR-10.2).
+  async headers() {
+    return robotsHeaders(serverEnv.VERCEL_ENV);
   },
   async redirects() {
     return [

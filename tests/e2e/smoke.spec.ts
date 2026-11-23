@@ -15,6 +15,7 @@ const PAGES = [
     heading: "CampusNav AI",
   },
   { name: "about", path: "/about", heading: /^(About|Hi, I am Favour\.)$/ },
+  { name: "privacy", path: "/privacy", heading: "Privacy" },
   {
     name: "404",
     path: "/this-page-does-not-exist",
