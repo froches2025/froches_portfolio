@@ -13,14 +13,20 @@ import {
   socialLinks,
 } from "@/lib/content/site";
 import { env } from "@/lib/env";
+import { pageMetadata, SITE_NAME } from "@/lib/seo/metadata";
 import { schibsted } from "./fonts";
 import "./globals.css";
 
+const DESCRIPTION =
+  "Favour Michael is a software engineer in Kigali, Rwanda, who builds and ships AI-powered products for African users.";
+
+// FR-10.1. metadataBase makes canonicals and share-image URLs absolute; it is
+// https://froches.tech in production (technical-design section 6).
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_SITE_URL),
-  title: "Favour Michael",
-  description:
-    "Favour Michael is a software engineer in Kigali, Rwanda, who builds and ships AI-powered products for African users.",
+  // The image comes from ./opengraph-image.tsx in this same folder.
+  ...pageMetadata({ description: DESCRIPTION, path: "/", image: "file" }),
+  title: { template: `%s · ${SITE_NAME}`, default: SITE_NAME },
 };
 
 export default async function RootLayout({

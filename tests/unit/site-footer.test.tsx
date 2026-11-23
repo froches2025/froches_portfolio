@@ -5,13 +5,17 @@ import { SiteFooter } from "@/components/public/site-footer";
 describe("SiteFooter", () => {
   afterEach(cleanup);
 
-  it("shows only the source line without profile links, in a new tab", () => {
+  it("shows the source and privacy links without profile links", () => {
     render(<SiteFooter />);
     const links = screen.getAllByRole("link");
     expect(links.map((link) => link.textContent)).toEqual([
       "Read the source on GitHub (opens in a new tab)",
+      "Privacy",
     ]);
     expect(links[0].getAttribute("target")).toBe("_blank");
+    // The privacy note is a site page, so it stays in the same tab (NFR-6).
+    expect(links[1].getAttribute("href")).toBe("/privacy");
+    expect(links[1].hasAttribute("target")).toBe(false);
   });
 
   it("shows each link it is given, and email as mailto in the same tab", () => {

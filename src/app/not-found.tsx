@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ContourLines } from "@/components/motion/contour-lines";
 import { Entrance } from "@/components/motion/entrance";
+
+// No canonical: a missing page should not point search engines anywhere.
+export const metadata: Metadata = {
+  title: "Page not found",
+  description: "This page moved or never existed.",
+};
 
 // Designs 09 and 10. Copy from docs/design/source/NotFound.dc.html.
 export default function NotFound() {

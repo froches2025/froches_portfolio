@@ -20,6 +20,9 @@ const publicSchema = z.object({
 
 const serverSchema = z.object({
   CRON_SECRET: z.string().min(32),
+  // Set by Vercel for each deployment, absent locally and in CI. Decides
+  // whether the build sends noindex (src/lib/seo/indexing.ts).
+  VERCEL_ENV: z.enum(["production", "preview", "development"]).optional(),
 });
 
 export type Env = z.infer<typeof publicSchema>;

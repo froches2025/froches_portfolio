@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { Entrance } from "@/components/motion/entrance";
 import { ProjectCard } from "@/components/public/project-card";
 import { getPublishedProjects } from "@/lib/content/queries";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Projects · Favour Michael",
+export const metadata: Metadata = pageMetadata({
+  title: "Projects",
   description:
     "Projects Favour Michael has built and shipped, with case studies.",
-  alternates: { canonical: "/projects" },
-};
+  path: "/projects",
+});
 
 // Design 03 (FR-2.1): every published project in Favour's manual order.
 export default async function ProjectsPage() {

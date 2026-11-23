@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Entrance } from "@/components/motion/entrance";
 import { ExperienceList } from "@/components/public/experience-list";
@@ -13,10 +12,10 @@ import {
   getProfile,
 } from "@/lib/content/queries";
 import { hasResume, RESUME_HREF, socialLinks } from "@/lib/content/site";
+import { env } from "@/lib/env";
+import { personJsonLd, serializeJsonLd } from "@/lib/seo/person";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/" },
-};
+// Home inherits the layout's title, description, canonical and share data.
 
 const SECTIONS = [
   { id: "about", label: "About" },
@@ -126,6 +125,15 @@ export default async function HomePage() {
 
   return (
     <HomeLayout intro={intro}>
+      <script
+        type="application/ld+json"
+        // Built from the profile row only; serializeJsonLd escapes "<".
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd(
+            personJsonLd(profile, env.NEXT_PUBLIC_SITE_URL),
+          ),
+        }}
+      />
       <section
         id="about"
         aria-label="About"

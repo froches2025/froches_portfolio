@@ -40,7 +40,10 @@ export function SiteFooter({ links = {} }: { links?: SocialLinks }) {
         >
           Read the source on GitHub
         </SiteLink>
-        .
+        .{" "}
+        <SiteLink href="/privacy" className="underline underline-offset-2">
+          Privacy
+        </SiteLink>
       </p>
     </footer>
   );

@@ -20,6 +20,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Only case studies: the proxy never runs on any other route.
-  matcher: "/projects/:slug",
+  // Only case studies and the files under them (their share image): the
+  // proxy never runs on any other route.
+  matcher: ["/projects/:slug", "/projects/:slug/:rest*"],
 };

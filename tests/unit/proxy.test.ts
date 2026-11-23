@@ -10,8 +10,17 @@ const request = (path: string) =>
   new NextRequest(new URL(path, "https://froches.tech"));
 
 describe("proxy (unknown case-study slugs)", () => {
-  it("only runs on /projects/:slug", () => {
-    expect(config.matcher).toBe("/projects/:slug");
+  it("only runs on case studies and the files under them", () => {
+    expect(config.matcher).toEqual([
+      "/projects/:slug",
+      "/projects/:slug/:rest*",
+    ]);
+  });
+
+  it("lets a published slug's share image through", () => {
+    const response = proxy(request("/projects/aidready/opengraph-image/card"));
+    expect(response.status).toBe(200);
+    expect(response.headers.get("x-middleware-rewrite")).toBeNull();
   });
 
   it("lets a published slug through", () => {
@@ -24,6 +33,7 @@ describe("proxy (unknown case-study slugs)", () => {
     "/projects/does-not-exist",
     "/projects/draft-project",
     "/projects/AidReady",
+    "/projects/does-not-exist/opengraph-image/card",
   ])(
     "rewrites %s to the 404 page with status 404, without a redirect",
     (path) => {

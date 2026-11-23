@@ -10,13 +10,14 @@ import { formatMonthRange, paragraphs } from "@/lib/content/format";
 import { getAbout, getProfile } from "@/lib/content/queries";
 import { hasResume, RESUME_HREF } from "@/lib/content/site";
 import { publicStorageUrl } from "@/lib/content/storage";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "About · Favour Michael",
+export const metadata: Metadata = pageMetadata({
+  title: "About",
   description:
     "About Favour Michael: experience, education, leadership roles, skills and a few things about her.",
-  alternates: { canonical: "/about" },
-};
+  path: "/about",
+});
 
 function Certificate({ path, name }: { path: string | null; name: string }) {
   if (!path) return null;
